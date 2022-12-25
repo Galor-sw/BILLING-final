@@ -18,7 +18,7 @@
 }
 
 .price:hover {
-    box-shadow: 0 8px 12px 0 rgba(0,0,0,0.2)
+    box-shadow: 0 8px 12px 0 rgba(0, 0, 0, 0.2)
 }
 
 .price .header {
@@ -31,6 +31,19 @@
     border-bottom: 1px solid #eee;
     padding: 20px;
     text-align: center;
+}
+
+.buttonsDiv {
+    display: grid;
+    justify-content: space-evenly;
+    grid-template-columns: auto auto;
+    align-content: space-around;
+}
+
+.buttonsDivSelected {
+    display: grid;
+    justify-content: space-evenly;
+    align-content: space-around;
 }
 
 .price .grey {
@@ -48,7 +61,7 @@
     font-size: 18px;
 }
 
-#selected{
+#selected {
     background-color: grey;
 }
 
