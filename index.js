@@ -1,4 +1,6 @@
-require("dotenv").config({path: 'config/.env'});
+require("dotenv").config({path: '.env'});
+require('./mongoConnection');
+
 //html files handler
 const fileLoaderRouter = require('./routers/fileLoaderRouter');
 
