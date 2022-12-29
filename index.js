@@ -8,7 +8,8 @@ const stripeSecretKey = process.env.STRIPE_SECRET_KEY;
 const stripePublicKey = process.env.STRIPE_PUBLIC_KEY;
 
 const express = require('express');
-
+const serverlogger = require(`./logger`);
+const logger = serverlogger.log;
 const app = express();
 const fs = require('fs');
 const stripe = require('stripe')(stripeSecretKey);
@@ -95,6 +96,6 @@ app.use('/favicon.ico', express.static('./favicon.ico'));
 
 //create server
 app.listen(process.env.PORT || 3000, () => {
-    console.log(`Server is listening on port ${process.env.PORT}`)
+    logger.info(`Server is listening on port ${process.env.PORT}`)
 });
 
