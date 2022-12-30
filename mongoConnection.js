@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
-const serverlogger = require(`./logger`);
-let logger = serverlogger.log;
+const serverLogger = require(`./logger`);
+let logger = serverLogger.log;
 const options = {
     useNewUrlParser: true,    // For deprecation warnings
     useUnifiedTopology: true // For deprecation warnings
