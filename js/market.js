@@ -1,11 +1,5 @@
-// import path from "path";
-// const path = require("path");
-let stripe = Stripe(
-    "pk_test_51MEs47EyaWpE1SJQwROynikxBSPhWRDjKr0MHv0TvlQysNn19iJ1oaq2MfhnEvfvN1KjdeRe2x61FlFuumgfM49500fBpbNo4n"
-);
 
-
-$.get('http://localhost:5000/GetAllProducts')
+$.get('http://localhost:5000/plans')
     .done((result) => {
         // let product=JSON.stringify(result);
         let f = document.getElementById('form-box');
@@ -66,7 +60,7 @@ $.get('http://localhost:5000/GetAllProducts')
             let productJson = {};
             productJson.id = productId;
             productJson.quantity = 1;
-            $.post('http://localhost:5000/purchase', productJson)
+            $.post('http://localhost:5000/plans', productJson)
                 .done((link) => {
                     window.location.replace(link);
                 })

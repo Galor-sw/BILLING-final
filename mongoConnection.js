@@ -1,11 +1,12 @@
 const mongoose = require('mongoose');
-const serverlogger = require(`./logger`);
-let logger = serverlogger.log;
+const serverLogger = require(`./logger`);
+let logger = serverLogger.log;
 const options = {
     useNewUrlParser: true,    // For deprecation warnings
     useUnifiedTopology: true // For deprecation warnings
 };
 
+console.log("here:::" + process.env.DB_HOST)
 mongoose.set('strictQuery', false);
 mongoose
     .connect(process.env.DB_HOST, options)

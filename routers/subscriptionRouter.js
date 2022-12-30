@@ -1,7 +1,7 @@
 const { Router } = require('express');
-const {subscriptionController} = require('../controllers/subscriptionController');
+const subscriptionController = require('../controllers/subscriptionController');
+const subscriptionRouter = Router();
 
-const subscriptionRouter = new Router();
 
 
 module.exports = {subscriptionRouter};

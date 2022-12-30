@@ -1,8 +1,9 @@
-const express = require('express');
+const { Router } = require('express');
 const fileLoaderController= require("../controllers/fileLoaderController");
-const fileLoaderRouter = express.Router();
+const fileLoaderRouter = Router();
 
 fileLoaderRouter.get('/',fileLoaderController.loadLoginFile);
+fileLoaderRouter.get('/message',fileLoaderController.loadMassageFile);
 
 
 
