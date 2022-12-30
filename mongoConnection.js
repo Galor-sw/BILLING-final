@@ -6,7 +6,6 @@ const options = {
     useUnifiedTopology: true // For deprecation warnings
 };
 
-console.log("here:::" + process.env.DB_HOST)
 mongoose.set('strictQuery', false);
 mongoose
     .connect(process.env.DB_HOST, options)
