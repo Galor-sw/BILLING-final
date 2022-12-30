@@ -6,7 +6,7 @@ module.exports = {
 
         const payload = req.body;
         const sig = req.headers['stripe-signature'];
-        const endpointSecret = 'whsec_fbb7eed21ab4bb9f7dc70a539aaccb0b870b99f07daa2069807e73d374589ddd';
+        const endpointSecret = process.env.STRIPE_ENDPOINT_SECRETKEY;
 
         let event;
 
