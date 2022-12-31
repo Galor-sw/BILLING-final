@@ -8,19 +8,21 @@ const cors = require("cors")
 //Routers
 const fileLoaderRouter = require('./routers/fileLoaderRouter');
 const plansRouter = require('./routers/planRouter');
+const webhooksRouter = require('./routers/webhooksRouter');
 
 const logger = serverLogger.log;
 const app = express();
 
 app.set('view engine', 'ejs')
 app.use(cors({origin: true})); // enable origin cors
-app.use(express.json());
+//app.use(express.json()); NEEDED TO REMOVE IT FOR THE WEBHOOK TO SUCCEESS
 app.use(express.urlencoded({
     extended: true
 }));
 
-
+//Router uses
 app.use('/plans', plansRouter);
+app.use('/webhook', express.raw({type: "application/json"}), webhooksRouter);
 
 //load files
 app.use('/', fileLoaderRouter);
