@@ -1,10 +1,10 @@
 
 $.get('http://localhost:5000/plans')
     .done((result) => {
-        // let product=JSON.stringify(result);
-        let f = document.getElementById('form-box');
+        console.log(result);
+        let f = document.getElementsByTagName('div')[2];
         let counter = 1;
-        for (let i in result.data) {
+        for (let i in result) {
 
             let div = document.createElement('div');
             div.className = 'columns';
@@ -12,48 +12,60 @@ $.get('http://localhost:5000/plans')
             ul.className = 'price';
             let li = document.createElement('li');
             li.className = 'header';
-            li.innerHTML = result.data[i].name;
+            li.innerHTML = result[i].name;
             ul.appendChild(li);
 
-            if (!result.data[i].prices[1]) {
+            if (!result[i].price_year) {
                 let li = document.createElement('li');
                 li.className = 'grey';
-                li.innerHTML = "$ " + result.data[i].prices[0].price;
+                li.innerHTML = "$" + result[i].price_month;
                 ul.appendChild(li);
             } else {
                 let li = document.createElement('li');
                 li.className = 'grey';
-                li.innerHTML = "$ " + result.data[i].prices[0].price + " / " + result.data[i].prices[0].interval + " <b>OR</b> " + "$ " + result.data[i].prices[1].price + " / " + result.data[i].prices[1].interval;
+                li.innerHTML = "$" + result[i].price_month + " per month " + " <b>/</b> " + "$" + result[i].price_year + " per year ";
                 ul.appendChild(li);
             }
             let li3 = document.createElement('li');
-            li3.innerHTML = counter + " users";
-            counter = counter + 1;
+            li3.innerHTML = result[i].seats + " Seats, "+ result[i].credits + " Credits" ;
+            // counter = counter + 1;
             ul.appendChild(li3);
             let buttonsDiv = document.createElement('div');
             buttonsDiv.className = 'buttonsDiv';
-            result.data[i].prices.forEach((price) => {
-                if (result.data[i].prices[1] == null) {
-                    let input = document.createElement('input');
-                    buttonsDiv.className = 'buttonsDivSelected';
-                    input.className = 'button';
-                    input.id = 'selected';
-                    input.type = 'submit';
-                    input.value = 'selected';
-                    input.name = price.id;
-                    buttonsDiv.appendChild(input);
-                } else {
-                    let input = document.createElement('input');
-                    input.className = 'button';
-                    input.type = 'submit';
-                    input.value = price.interval;
-                    input.name = price.id;
-                    buttonsDiv.appendChild(input);
-                }
-            })
-            ul.appendChild(buttonsDiv);
-            div.appendChild(ul);
-            f.appendChild(div);
+            if (result[i].price_year== null) {
+                let input = document.createElement('input');
+                buttonsDiv.className = 'buttonsDivSelected';
+                input.className = 'button';
+                input.id = 'selected';
+                input.type = 'submit';
+                input.value = 'selected';
+                input.name = i;
+                buttonsDiv.appendChild(input);
+                ul.appendChild(buttonsDiv);
+                div.appendChild(ul);
+                f.appendChild(div);
+            } else {
+                let input1 = document.createElement('input');
+                input1.className = 'button';
+                input1.type = 'submit';
+                input1.value = 'month';
+                input1.name = i;
+                buttonsDiv.appendChild(input1);
+                ul.appendChild(buttonsDiv);
+                div.appendChild(ul);
+                f.appendChild(div);
+                let input2 = document.createElement('input');
+                input2.name = i;
+                input2.className = 'button';
+                input2.type = 'submit';
+                input2.value = 'year';
+                input2.className = 'button';
+                input2.type = 'submit';
+                buttonsDiv.appendChild(input2);
+                ul.appendChild(buttonsDiv);
+                div.appendChild(ul);
+                f.appendChild(div);
+            }
         }
         $('input[type="submit"]').click((e) => {
             let productId = e.target.name;

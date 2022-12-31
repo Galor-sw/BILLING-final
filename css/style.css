@@ -1,7 +1,26 @@
 * {
     box-sizing: border-box;
+    margin: 0;
+    padding: 0;
 }
-
+header,main{
+    display: block;
+}
+.wrapper{
+    margin: 0 auto;
+    width: 90%;
+}
+header{
+    height: 100px;
+}
+#space{
+    display: block;
+    height: 70px;
+    text-align: center;
+}
+input{
+    width: 120px;
+}
 .columns {
     float: left;
     width: 33.3%;
@@ -18,7 +37,7 @@
 }
 
 .price:hover {
-    box-shadow: 0 8px 12px 0 rgba(0, 0, 0, 0.2)
+    box-shadow: 0 8px 12px 0 rgba(0, 0, 0, 0.2);
 }
 
 .price .header {
@@ -45,6 +64,7 @@
     justify-content: space-evenly;
     align-content: space-around;
 }
+
 
 .price .grey {
     background-color: #eee;
