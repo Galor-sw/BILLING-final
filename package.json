@@ -8,13 +8,16 @@
     "init": "^0.1.2",
     "moment": "^2.29.4",
     "mongoose": "^6.8.2",
+    "node-cron": "^3.0.2",
     "nodemon": "^2.0.20",
+    "request": "^2.88.2",
     "stripe": "^11.3.0",
     "winston": "^3.8.2"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon index.js",
-    "start": "node index.js"
+    "start": "node index.js",
+    "cron": "node cronJob/cronJob.js"
   }
 }
