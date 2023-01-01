@@ -1,7 +1,7 @@
-const { Plan } = require('../models/plan')
+const {Plan} = require('../models/plan')
 
-// const stripeSecretKey = process.env.STRIPE_SECRET_KEY;
-// const stripe = require('stripe')(stripeSecretKey);
+const stripeSecretKey = process.env.STRIPE_SECRET_KEY;
+const stripe = require('stripe')(stripeSecretKey);
 
 module.exports = {
     getAllPlans: (req, res) => {
@@ -10,34 +10,33 @@ module.exports = {
         })
             .catch(err => loggers.error(err));
     },
-    getPlanByName: async (req,res) => {
-        Plan.findOne({'name':name}).then(result=>{
+    getPlanByName: async (req, res) => {
+        Plan.findOne({'name': name}).then(result => {
             if (result) {
                 res.send(result);
             } else {
                 res.send("Does not exist, try again");
             }
         }).catch(err => loggers.error(err));
+    },
+    purchasePlan: async (req, res) => {
+        try {
+            const session = await stripe.checkout.sessions.create({
+                success_url: 'http://localhost:5000/message',
+                cancel_url: 'http://localhost:5000/message',
+                line_items: [
+                    {price: req.body.id, quantity: req.body.quantity},
+                ],
+                mode: 'subscription',
+            })
+            const urlCheckOut = session.url;
+            res.send(urlCheckOut);
+        } catch (e) {
+            console.log("error " + e.message);
+        }
     }
 }
-    // purchasePlan: async (req, res) => {
-    //     try {
-    //         const session = await stripe.checkout.sessions.create({
-    //             success_url: 'http://localhost:5000/message',
-    //             cancel_url: 'http://localhost:5000/message',
-    //             line_items: [
-    //                 {price: req.body.id, quantity: req.body.quantity},
-    //             ],
-    //             mode: 'subscription',
-    //         })
-    //         const urlCheckOut = session.url;
-    //         res.send(urlCheckOut);
-    //     } catch (e) {
-    //         console.log("error " + e.message);
-    //     }
-    // }
-// }
-//
+
 // const getPricesForProduct = async (product) => {
 //     product.prices = [];
 //     try {
@@ -58,4 +57,5 @@ module.exports = {
 //     } catch (e) {
 //         console.log("error " + e.message);
 //     }
+//
 // }

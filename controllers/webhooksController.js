@@ -10,16 +10,15 @@ module.exports = {
 
         let event;
 
-        try{
+        try {
             event = stripe.webhooks.constructEvent(payload, sig.toString(), endpointSecret)
-        }catch (err){
+        } catch (err) {
             console.log(err.message)
             res.status(400).json({success: false})
             return;
         }
 
         console.log(event.type);
-        console.log(event.data.object);
-        console.log(event.data.object.id);
+        console.log(event.data);
     }
 }
