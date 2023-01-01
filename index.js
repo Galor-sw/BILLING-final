@@ -20,8 +20,8 @@ app.use(express.urlencoded({
     extended: true
 }));
 
-//Router uses
-app.use('/plans', plansRouter);
+//Router uses - CHECK IF IT IS A PROPER WAY TO USE IT
+app.use('/plans', express.json(), plansRouter);
 app.use('/webhook', express.raw({type: "application/json"}), webhooksRouter);
 
 //load files
