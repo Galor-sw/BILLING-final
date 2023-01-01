@@ -9,7 +9,8 @@ const cors = require("cors")
 const fileLoaderRouter = require('./routers/fileLoaderRouter');
 const plansRouter = require('./routers/planRouter');
 const webhooksRouter = require('./routers/webhooksRouter');
-
+const subscriptionRouter = require('./routers/subscriptionRouter');
+const startCronJob = require('./cronJob/cronJob');
 const logger = serverLogger.log;
 const app = express();
 
@@ -22,6 +23,7 @@ app.use(express.urlencoded({
 
 //Router uses - CHECK IF IT IS A PROPER WAY TO USE IT
 app.use('/plans', express.json(), plansRouter);
+app.use('/subscription', express.json(), subscriptionRouter);
 app.use('/webhook', express.raw({type: "application/json"}), webhooksRouter);
 
 //load files
@@ -35,4 +37,11 @@ app.use('/favicon.ico', express.static('./favicon.ico'));
 app.listen(process.env.PORT || 3000, () => {
     logger.info(`Server is listening on port ${process.env.PORT}`)
 });
+
+startCron = () => {
+    startCronJob();
+    logger.info('cron job started');
+}
+
+startCron();
 
