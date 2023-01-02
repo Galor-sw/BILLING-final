@@ -4,13 +4,14 @@ require('./mongoConnection');
 const express = require('express');
 const serverLogger = require(`./logger`);
 const cors = require("cors")
+const startCronJob = require('./cronJob/cronJob');
 
 //Routers
 const fileLoaderRouter = require('./routers/fileLoaderRouter');
 const plansRouter = require('./routers/planRouter');
 const webhooksRouter = require('./routers/webhooksRouter');
 const subscriptionRouter = require('./routers/subscriptionRouter');
-const startCronJob = require('./cronJob/cronJob');
+
 const logger = serverLogger.log;
 const app = express();
 
