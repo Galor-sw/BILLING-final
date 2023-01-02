@@ -9,29 +9,13 @@ const logger = serverLogger.log;
 module.exports = {
     getAllPlans: async (req, res) => {
 
-        let plans, prices;
-
         try {
-            plans = await getPlans();
-            prices = await getPrices();
-
+            let plans = await getPlans();
+            res.send(plans)
         } catch (err) {
-            logger.error(`retrieve from stripe error: ${err.message}`)
+            logger.error(`failed to fetch plans from DB error: ${err.message}`)
         }
 
-        // Plan.find({}).then(result => {
-        //     res.send(result);
-        // })
-        //     .catch(err => loggers.error(err));
-    },
-    getPlanByName: async (req, res) => {
-        Plan.findOne({'name': name}).then(result => {
-            if (result) {
-                res.send(result);
-            } else {
-                res.send("Does not exist, try again");
-            }
-        }).catch(err => loggers.error(err));
     },
     purchasePlan: async (req, res) => {
         try {
@@ -49,71 +33,13 @@ module.exports = {
             })
             const urlCheckOut = session.url;
             res.send(urlCheckOut);
-        } catch (e) {
-            console.log("error " + e.message);
+        } catch (err) {
+            logger.error(`failed to make a purchase from Stripe error: ${err.message}`);
         }
     }
 }
 
+//this function should be in a repository.
 const getPlans = () => {
-    let planList = [];
-
-    const plans = stripe.products.list({
-        active: true
-    });
-
-    plans.data.forEach(elem => {
-        const plan = {
-            id: elem.id,
-            name: elem.name,
-            description: elem.description,
-            //prices:
-        }
-        planList.push(plan);
-    })
-
-    return planList;
+    return Plan.find({});
 }
-
-const getPrices = () => {
-    let pricesDict = {};
-
-    let prices = stripe.prices.list({
-        active: true
-    });
-
-    prices.data.forEach(elem => {
-        const price = {
-            id: elem.id,
-            currency: elem.currency,
-            product: elem.product,
-            amount: elem.amount / 100,
-        }
-        pricesDict["??"] = price;
-    })
-
-    return prices;
-}
-
-// const getPricesForProduct = async (product) => {
-//     product.prices = [];
-//     try {
-//         const price = await stripe.prices.search({
-//             query: `product:\'${product.id}\'`,
-//         });
-//         for (let i in price.data) {
-//             product.prices[i] = {};
-//             product.prices[i].id = price.data[i].id;
-//             product.prices[i].price = price.data[i].unit_amount / 100;
-//             if (price.data[i].type == 'recurring')
-//                 product.prices[i].interval = price.data[i].recurring.interval;
-//             if (price.data[i].type == 'one_time')
-//                 product.prices[i].interval = price.data[i].type;
-//         }
-//         return product;
-//
-//     } catch (e) {
-//         console.log("error " + e.message);
-//     }
-//
-// }
