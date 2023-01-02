@@ -1,4 +1,3 @@
-
 $.get('http://localhost:5000/plans')
     .done((result) => {
         console.log(result);
@@ -27,12 +26,12 @@ $.get('http://localhost:5000/plans')
                 ul.appendChild(li);
             }
             let li3 = document.createElement('li');
-            li3.innerHTML = result[i].seats + " Seats, "+ result[i].credits + " Credits" ;
+            li3.innerHTML = result[i].seats + " Seats, " + result[i].credits + " Credits";
             // counter = counter + 1;
             ul.appendChild(li3);
             let buttonsDiv = document.createElement('div');
             buttonsDiv.className = 'buttonsDiv';
-            if (result[i].price_year== null) {
+            if (result[i].price_year == null) {
                 let input = document.createElement('input');
                 buttonsDiv.className = 'buttonsDivSelected';
                 input.className = 'button';
@@ -59,8 +58,6 @@ $.get('http://localhost:5000/plans')
                 input2.className = 'button';
                 input2.type = 'submit';
                 input2.value = 'year';
-                input2.className = 'button';
-                input2.type = 'submit';
                 buttonsDiv.appendChild(input2);
                 ul.appendChild(buttonsDiv);
                 div.appendChild(ul);

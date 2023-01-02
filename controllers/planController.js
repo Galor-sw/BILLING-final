@@ -3,12 +3,26 @@ const {Plan} = require('../models/plan')
 const stripeSecretKey = process.env.STRIPE_SECRET_KEY;
 const stripe = require('stripe')(stripeSecretKey);
 
+const serverLogger = require(`../logger`);
+const logger = serverLogger.log;
+
 module.exports = {
-    getAllPlans: (req, res) => {
-        Plan.find({}).then(result => {
-            res.send(result);
-        })
-            .catch(err => loggers.error(err));
+    getAllPlans: async (req, res) => {
+
+        let plans, prices;
+
+        try {
+            plans = await getPlans();
+            prices = await getPrices();
+
+        } catch (err) {
+            logger.error(`retrieve from stripe error: ${err.message}`)
+        }
+
+        // Plan.find({}).then(result => {
+        //     res.send(result);
+        // })
+        //     .catch(err => loggers.error(err));
     },
     getPlanByName: async (req, res) => {
         Plan.findOne({'name': name}).then(result => {
@@ -28,6 +42,10 @@ module.exports = {
                     {price: req.body.id, quantity: req.body.quantity},
                 ],
                 mode: 'subscription',
+                metadata: {
+                    // we can insert here key value pairs with data we want to get whe nwebhooks arrives.
+                    planId: "insert Id here"
+                }
             })
             const urlCheckOut = session.url;
             res.send(urlCheckOut);
@@ -35,6 +53,46 @@ module.exports = {
             console.log("error " + e.message);
         }
     }
+}
+
+const getPlans = () => {
+    let planList = [];
+
+    const plans = stripe.products.list({
+        active: true
+    });
+
+    plans.data.forEach(elem => {
+        const plan = {
+            id: elem.id,
+            name: elem.name,
+            description: elem.description,
+            //prices:
+        }
+        planList.push(plan);
+    })
+
+    return planList;
+}
+
+const getPrices = () => {
+    let pricesDict = {};
+
+    let prices = stripe.prices.list({
+        active: true
+    });
+
+    prices.data.forEach(elem => {
+        const price = {
+            id: elem.id,
+            currency: elem.currency,
+            product: elem.product,
+            amount: elem.amount / 100,
+        }
+        pricesDict["??"] = price;
+    })
+
+    return prices;
 }
 
 // const getPricesForProduct = async (product) => {
