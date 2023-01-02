@@ -1,8 +1,6 @@
 $.get('http://localhost:5000/plans')
     .done((result) => {
-        console.log(result);
         let f = document.getElementsByTagName('div')[2];
-        let counter = 1;
         for (let i in result) {
 
             let div = document.createElement('div');
@@ -14,24 +12,34 @@ $.get('http://localhost:5000/plans')
             li.innerHTML = result[i].name;
             ul.appendChild(li);
 
-            if (!result[i].price_year) {
+            if (result[i].name == "Free Plan") {
                 let li = document.createElement('li');
                 li.className = 'grey';
-                li.innerHTML = "$" + result[i].price_month;
+                li.innerHTML = `Free of charge`;
                 ul.appendChild(li);
             } else {
                 let li = document.createElement('li');
                 li.className = 'grey';
-                li.innerHTML = "$" + result[i].price_month + " per month " + " <b>/</b> " + "$" + result[i].price_year + " per year ";
+                li.innerHTML = `$ ${result[i].prices.month.amount} per month  
+                                <br>
+                                <b>OR</b> 
+                                <br>
+                                $ ${result[i].prices.year.amount} per year`;
                 ul.appendChild(li);
             }
+
             let li3 = document.createElement('li');
-            li3.innerHTML = result[i].seats + " Seats, " + result[i].credits + " Credits";
+
+            li3.innerHTML = `Seats: ${result[i].seats} 
+                            <br> 
+                            Credits: ${result[i].credits}`
+
             // counter = counter + 1;
             ul.appendChild(li3);
             let buttonsDiv = document.createElement('div');
             buttonsDiv.className = 'buttonsDiv';
-            if (result[i].price_year == null) {
+
+            if (result[i].name == "Free Plan") {
                 let input = document.createElement('input');
                 buttonsDiv.className = 'buttonsDivSelected';
                 input.className = 'button';
