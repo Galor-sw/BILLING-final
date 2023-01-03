@@ -2,10 +2,11 @@
 <h2>A service that allows clients to manage plans and subscriptions
 and charge the client's users accordingly</h2>
 <h3>Description:</h3>
-<ol>The service will have three plans:</ol>
+<ol>The service will have three plans:
 <li>Free</li>
 <li>Pro</li>
 <li>Premium</li>
+</ol>
 The service provides a list of all the plans and it's details for the user.
 The services will show the  client's user which subscription he owns.
 THe client's user will be able to choose another plan.
@@ -37,10 +38,10 @@ TODO: ask DAVID
 <li>Alona Rozner, Alonarozner4@gmail.com</li>
 <li>Dor Haimovich, dorhaim765@gmail.com</li>
 <li>Gal Or, galor546@gmail.com</li>
-<liGil Davidi, gildavidi75@gmail.com</li>
+<li>Gil Davidi, gildavidi75@gmail.com</li>
 <li>Itay Aharoni, itay45977@gmail.com</li>
 
-</ol>
+</ul>
 <h4>The Lecturer-</h4>
 David Avigad, DavidAvigad@shenkar.ac.il
 
