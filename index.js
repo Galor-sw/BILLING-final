@@ -11,6 +11,7 @@ const fileLoaderRouter = require('./routers/fileLoaderRouter');
 const plansRouter = require('./routers/planRouter');
 const webhooksRouter = require('./routers/webhooksRouter');
 const subscriptionRouter = require('./routers/subscriptionRouter');
+const statisticRouter = require('./routers/statisticRouter');
 
 const logger = serverLogger.log;
 const app = express();
@@ -26,6 +27,7 @@ app.use(express.urlencoded({
 app.use('/plans', express.json(), plansRouter);
 app.use('/subscription', express.json(), subscriptionRouter);
 app.use('/webhook', express.raw({type: "application/json"}), webhooksRouter);
+app.use('/statistic',express.json(),statisticRouter);
 
 //load files
 app.use('/user', fileLoaderRouter);
