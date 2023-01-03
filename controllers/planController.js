@@ -1,4 +1,5 @@
 const {Plan} = require('../models/plan')
+const plansRepo = require('../repositories/plansRepo');
 
 const stripeSecretKey = process.env.STRIPE_SECRET_KEY;
 const stripe = require('stripe')(stripeSecretKey);
@@ -10,7 +11,7 @@ module.exports = {
     getAllPlans: async (req, res) => {
 
         try {
-            let plans = await getPlans();
+            let plans = await plansRepo.getPlans();
             res.send(plans)
         } catch (err) {
             logger.error(`failed to fetch plans from DB error: ${err.message}`)
@@ -36,10 +37,12 @@ module.exports = {
         } catch (err) {
             logger.error(`failed to make a purchase from Stripe error: ${err.message}`);
         }
+    },
+    getPlanByName: async (req, res) => {
+        const id = await plansRepo.getPlanByName(req.params.name);
+        if (id)
+            res.send(id);
+        else
+            res.status(404).send(null);
     }
-}
-
-//this function should be in a repository.
-const getPlans = () => {
-    return Plan.find({});
 }
