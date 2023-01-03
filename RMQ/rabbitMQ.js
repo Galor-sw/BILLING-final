@@ -4,19 +4,21 @@ const serverLogger = require(`../logger`);
 const logger = serverLogger.log;
 
 const sendQueueUpdate = (user_mail, credits) => {
+
     amqp.connect(amqpURL, (err, conn) => {
-        conn.createChannel((err, ch) => {
+        conn.createChannel(async (err, ch) => {
             const q = 'CloudAMQP';
-            const msg = {
+            const subscriptionDetails = {
                 "user_mail": {user_mail},
                 "credits": {credits}
             };
-            const stringMsg = JSON.stringify(msg);
+            const stringMsg = JSON.stringify(subscriptionDetails);
             ch.assertQueue(q, {durable: false});
-            setInterval(() => {
-                ch.sendToQueue(q, Buffer.from(stringMsg))
-                    .then(logger.info(`RMQ message sent: ${msg}`));
-            })
+            const sendQueue =  () => {
+                ch.sendToQueue(q, Buffer.from(stringMsg));
+            };
+             sendQueue().then(() => logger.info(`RMQ- update free plan message sent to user: ${user_mail} with: ${credits} credits`));
+
         })
     })
 }

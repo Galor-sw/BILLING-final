@@ -4,5 +4,7 @@ const subscriptionRouter = Router();
 
 subscriptionRouter.get('/', subscriptionController.getAllPSubscription)
 
+subscriptionRouter.get('/getAllSubscriptionByName/:name', subscriptionController.getAllSubscriptionByName)
+
 module.exports = subscriptionRouter;
 
