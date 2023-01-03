@@ -10,7 +10,7 @@ module.exports = {
     getAllPlans: async (req, res) => {
 
         try {
-            let plans = await getPlans();
+            const plans = await getPlans();
             res.send(plans)
         } catch (err) {
             logger.error(`failed to fetch plans from DB error: ${err.message}`)
