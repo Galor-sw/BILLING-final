@@ -28,7 +28,7 @@ app.use('/subscription', express.json(), subscriptionRouter);
 app.use('/webhook', express.raw({type: "application/json"}), webhooksRouter);
 
 //load files
-app.use('/', fileLoaderRouter);
+app.use('/user', fileLoaderRouter);
 app.use('/css', express.static(__dirname + '/css'));
 app.use('/js', express.static(__dirname + '/js'));
 app.use('/favicon.ico', express.static('./favicon.ico'));
