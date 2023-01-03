@@ -36,7 +36,7 @@ const startCronJob = () => {
         //get all subscriptions
         request('http://localhost:' + process.env.PORT + '/subscription/getAllSubscriptionByName/Free', {json: true}, (err, res, body) => {
             if (err) {
-                return console.log(err);
+                logger.error(`error in request in cron.schedule: ${err}`);
             }
             subscriptions = res.body;
         });

@@ -4,6 +4,7 @@ const serverLogger = require(`../logger`);
 const logger = serverLogger.log;
 
 const sendQueueUpdate = (user_mail, credits) => {
+
     amqp.connect(amqpURL, (err, conn) => {
         conn.createChannel(async (err, ch) => {
             const q = 'CloudAMQP';

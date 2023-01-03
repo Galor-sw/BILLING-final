@@ -11,6 +11,7 @@ module.exports = {
     },
     getAllSubscriptionByName: (req, res) => {
 
+
         Subscription.find({}).then(result => {
             res.send(result);
         })
