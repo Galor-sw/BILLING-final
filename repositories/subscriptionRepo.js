@@ -14,21 +14,7 @@ module.exports = {
         return Subscription.findById(ID).populate({path: "plan", model: "plans"});
     },
 
-    getAllSubscriptionsByPlanName: async (plan) => {
-        switch (plan) {
-            case 'Free': {
-                return Subscription.find({plan: process.env.freePlanID}).populate({path: "plan", model: "plans"});
-                break;
-            }
-            case 'Pro': {
-                return Subscription.find({plan: process.env.proPlanID}).populate({path: "plan", model: "plans"});
-                break;
-            }
-            case 'Premium': {
-                return Subscription.find({plan: process.env.premiumPlanID}).populate({path: "plan", model: "plans"});
-                break;
-            }
-        }
+    getAllSubscriptionsByPlanID: async (plan) => {
+        return Subscription.find({plan: plan}).populate({path: "plan", model: "plans"});
     }
-
 }
