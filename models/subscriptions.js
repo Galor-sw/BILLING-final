@@ -1,8 +1,8 @@
-const {Schema, model,mongoose} = require("mongoose");
+const {Schema, model, mongoose} = require("mongoose");
 
 const subscriptionsSchema = new Schema({
     email: {type: String, require: true, unique: true},
-    plan: {type: [mongoose.Types.ObjectId],ref: "plans", require: true},
+    plan: {type: mongoose.Types.ObjectId, ref: "plans", require: true},
     start_date: {type: Date, require: true},
     payment: {type: String, require: true},
     next_date: {type: Date, require: true},
@@ -11,4 +11,4 @@ const subscriptionsSchema = new Schema({
 
 const Subscription = model('subscriptions', subscriptionsSchema);
 
-module.exports = { Subscription };
+module.exports = {Subscription};
