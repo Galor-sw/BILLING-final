@@ -14,10 +14,8 @@ const sendQueueUpdate = (user_mail, credits) => {
             };
             const stringMsg = JSON.stringify(subscriptionDetails);
             ch.assertQueue(q, {durable: false});
-            const sendQueue =  () => {
-                ch.sendToQueue(q, Buffer.from(stringMsg));
-            };
-             sendQueue().then(() => logger.info(`RMQ- update free plan message sent to user: ${user_mail} with: ${credits} credits`));
+            await ch.sendToQueue(q, Buffer.from(stringMsg));
+            logger.info(`RMQ- update free plan message sent to user: ${user_mail} with: ${credits} credits`);
 
         })
     })
