@@ -3,24 +3,30 @@
     margin: 0;
     padding: 0;
 }
-header,main{
+
+header, main {
     display: block;
 }
-.wrapper{
+
+.wrapper {
     margin: 0 auto;
     width: 90%;
 }
-header{
+
+header {
     height: 100px;
 }
-#space{
+
+#container {
     display: block;
     height: 70px;
     text-align: center;
 }
-input{
+
+input {
     width: 120px;
 }
+
 .columns {
     float: left;
     width: 33.3%;

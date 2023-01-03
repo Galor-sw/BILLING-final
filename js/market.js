@@ -1,77 +1,58 @@
 $.get('http://localhost:5000/plans')
     .done((result) => {
-        let f = document.getElementsByTagName('div')[2];
+
+        // Create container
+        let container = document.getElementById('container');
+
+        // Create card for each plan
         for (let i in result) {
 
-            let div = document.createElement('div');
-            div.className = 'columns';
-            let ul = document.createElement('ul');
-            ul.className = 'price';
-            let li = document.createElement('li');
-            li.className = 'header';
-            li.innerHTML = result[i].name;
-            ul.appendChild(li);
+            let cardFrame = document.createElement('div');
+            cardFrame.className = 'columns';
+            let card = document.createElement('ul');
+            card.className = 'price';
 
-            if (result[i].name == "Free Plan") {
-                let li = document.createElement('li');
-                li.className = 'grey';
-                li.innerHTML = `Free of charge`;
-                ul.appendChild(li);
+            // Adding header with plan name
+            card.appendChild(createLi(result[i].name, 'header'));
+
+            // Adding prices
+            if (result[i].name == "Free") {
+                card.appendChild(createLi('Free of charge', 'grey'));
             } else {
-                let li = document.createElement('li');
-                li.className = 'grey';
-                li.innerHTML = `$ ${result[i].prices.month.amount} per month  
-                                <br>
-                                <b>OR</b> 
-                                <br>
-                                $ ${result[i].prices.year.amount} per year`;
-                ul.appendChild(li);
+                card.appendChild(createLi(`$ ${result[i].prices.month.amount} 
+                                                    per 
+                                                    ${result[i].prices.month.interval}  
+                                                    <br> <b>OR</b> <br>
+                                                    $ ${result[i].prices.year.amount} 
+                                                    per 
+                                                    ${result[i].prices.month.interval}`,
+                    'grey'));
             }
 
-            let li3 = document.createElement('li');
-
-            li3.innerHTML = `Seats: ${result[i].seats} 
+            // Adding details
+            card.appendChild(createLi(`Seats: ${result[i].seats} 
                             <br> 
-                            Credits: ${result[i].credits}`
+                            Credits: ${result[i].credits}`));
 
-            // counter = counter + 1;
-            ul.appendChild(li3);
+            // Create a new div for the buttons
             let buttonsDiv = document.createElement('div');
             buttonsDiv.className = 'buttonsDiv';
 
-            if (result[i].name == "Free Plan") {
-                let input = document.createElement('input');
-                buttonsDiv.className = 'buttonsDivSelected';
-                input.className = 'button';
-                input.id = 'selected';
-                input.type = 'submit';
-                input.value = 'selected';
-                input.name = i;
-                buttonsDiv.appendChild(input);
-                ul.appendChild(buttonsDiv);
-                div.appendChild(ul);
-                f.appendChild(div);
+            // Create the buttons
+            // We will change that selected to be Dynamic
+            if (result[i].name == "Free") {
+                buttonsDiv.appendChild(createSubmitButton('selected'));
             } else {
-                let input1 = document.createElement('input');
-                input1.className = 'button';
-                input1.type = 'submit';
-                input1.value = 'month';
-                input1.name = i;
-                buttonsDiv.appendChild(input1);
-                ul.appendChild(buttonsDiv);
-                div.appendChild(ul);
-                f.appendChild(div);
-                let input2 = document.createElement('input');
-                input2.name = i;
-                input2.className = 'button';
-                input2.type = 'submit';
-                input2.value = 'year';
-                buttonsDiv.appendChild(input2);
-                ul.appendChild(buttonsDiv);
-                div.appendChild(ul);
-                f.appendChild(div);
+                buttonsDiv.appendChild(createSubmitButton(result[i].prices.month.interval));
+                buttonsDiv.appendChild(createSubmitButton(result[i].prices.year.interval));
             }
+
+            // Append all
+            card.appendChild(buttonsDiv);
+            cardFrame.appendChild(card);
+            container.appendChild(cardFrame);
         }
+
         $('input[type="submit"]').click((e) => {
             let productId = e.target.name;
             let productJson = {};
@@ -86,6 +67,24 @@ $.get('http://localhost:5000/plans')
     })
 
 
+const createLi = (string, className = '') => {
+    let li = document.createElement('li');
+    if (className) {
+        li.className = className;
+    }
+    li.innerHTML = string;
 
+    return li;
+}
 
+const createSubmitButton = (value, className = 'button', type = 'submit') => {
+
+    let input = document.createElement('input');
+    input.className = className;
+    input.type = type;
+    input.value = value;
+    input.name = name;
+
+    return input;
+}
 
