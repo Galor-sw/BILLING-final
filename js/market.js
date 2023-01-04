@@ -5,7 +5,7 @@ $.get(`${urlEndPoint}/plans`)
     .done((result) => {
 
         // Create container
-        let container = document.getElementById('container');
+        let container = document.getElementsByClassName('container')[0];
 
         // Create card for each plan
         for (let i in result) {
