@@ -1,4 +1,7 @@
-$.get('http://localhost:5000/plans')
+import {url} from './urlService.js';
+const urlEndPoint= url();
+
+$.get(`${urlEndPoint}/plans`)
     .done((result) => {
 
         // Create container
@@ -58,7 +61,7 @@ $.get('http://localhost:5000/plans')
             let productJson = {};
             productJson.id = productId;
             productJson.quantity = 1;
-            $.post('http://localhost:5000/plans', productJson)
+            $.post(`${urlEndPoint}/plans`, productJson)
                 .done((link) => {
                     window.location.replace(link);
                 })
