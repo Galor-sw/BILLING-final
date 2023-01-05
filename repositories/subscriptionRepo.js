@@ -16,5 +16,9 @@ module.exports = {
 
     getAllSubscriptionsByPlanID: async (plan) => {
         return Subscription.find({plan: plan}).populate({path: "plan", model: "plans"});
-    }
+    },
+
+    getSubscriptionByClientID: async (ID) => {
+        return Subscription.findOne({accountId: ID}).populate({path: "plan", model: "plans"});
+    },
 }

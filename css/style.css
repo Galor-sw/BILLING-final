@@ -4,25 +4,38 @@
     padding: 0;
     color: white;
 }
-header, main{
+
+header, main {
     display: block;
 }
-header{
+
+header {
     text-align: center;
 }
+
 .container {
     display: flex;
     flex-direction: row;
 }
+
 .columns {
     float: left;
     width: 250px;
     padding: 8px;
     text-align: center;
 }
-.container :nth-child(3) { order: 1; }
-.container :nth-child(2) { order: 3; }
-.container :nth-child(1) { order: 2; }
+
+.container :nth-child(3) {
+    order: 1;
+}
+
+.container :nth-child(2) {
+    order: 3;
+}
+
+.container :nth-child(1) {
+    order: 2;
+}
 
 .price {
     list-style-type: none;
@@ -30,12 +43,15 @@ header{
     margin: 0;
     padding: 0;
 }
-.header,.buttonsDiv{
+
+.header, .buttonsDiv {
     height: 70px;
 }
-.grey{
+
+.grey {
     height: 120px;
 }
+
 .header {
     background-color: #111;
     font-size: 25px;
@@ -57,6 +73,7 @@ header{
     justify-content: space-evenly;
     align-content: space-around;
 }
+
 .button {
     background-color: #03e9f4;
     border: none;
@@ -67,12 +84,14 @@ header{
     font-size: 18px;
 }
 
-#selected {
-    background-color: grey;
+.selected {
+    color: grey;
 }
+
 html {
     height: 100%;
 }
+
 body {
     margin: 0;
     padding: 0;
@@ -138,6 +157,7 @@ body {
     pointer-events: none;
     transition: .5s;
 }
+
 .login-box .user-box label {
     position: absolute;
     padding: 10px 0;
@@ -148,6 +168,7 @@ body {
     color: #03e9f4;
     font-size: 12px;
 }
+
 .button {
     padding: 10px 20px;
     color: #03e9f4;

@@ -1,14 +1,18 @@
 import {url} from './urlService.js';
-const urlEndPoint= url();
 
-$.get(`${urlEndPoint}/plans`)
+const urlEndPoint = url();
+
+$.get(`${urlEndPoint}/plan-management/users/galorstudent@gmail.com/plans`)
     .done((result) => {
 
         // Create container
         let container = document.getElementsByClassName('container')[0];
 
         // Create card for each plan
-        for (let i in result) {
+        for (let i in result.plans) {
+
+            // shortcut for exact plan in the loop
+            const currentPlan = result.plans[i]
 
             let cardFrame = document.createElement('div');
             cardFrame.className = 'columns';
@@ -16,38 +20,44 @@ $.get(`${urlEndPoint}/plans`)
             card.className = 'price';
 
             // Adding header with plan name
-            card.appendChild(createLi(result[i].name, 'header'));
+            card.appendChild(createLi(currentPlan.name, 'header'));
 
             // Adding prices
-            if (result[i].name == "Free") {
+            if (currentPlan.name == "Free") {
                 card.appendChild(createLi('Free of charge', 'grey'));
             } else {
-                card.appendChild(createLi(`$ ${result[i].prices.month.amount} 
+                card.appendChild(createLi(`$ ${currentPlan.prices.month.amount} 
                                                     per 
-                                                    ${result[i].prices.month.interval}  
+                                                    ${currentPlan.prices.month.interval}  
                                                     <br> <b>OR</b> <br>
-                                                    $ ${result[i].prices.year.amount} 
+                                                    $ ${currentPlan.prices.year.amount} 
                                                     per 
-                                                    ${result[i].prices.month.interval}`,
+                                                    ${currentPlan.prices.month.interval}`,
                     'grey'));
             }
 
             // Adding details
-            card.appendChild(createLi(`Seats: ${result[i].seats} 
+            card.appendChild(createLi(`Seats: ${currentPlan.seats} 
                             <br> 
-                            Credits: ${result[i].credits}`));
+                            Credits: ${currentPlan.credits}`));
 
             // Create a new div for the buttons
             let buttonsDiv = document.createElement('div');
             buttonsDiv.className = 'buttonsDiv';
 
-            // Create the buttons
-            // We will change that selected to be Dynamic
-            if (result[i].name == "Free") {
-                buttonsDiv.appendChild(createSubmitButton('selected'));
+            let buttonClassName;
+            // Select buttons class for choosing the current plan
+            if (currentPlan.name == result.currentPlan) {
+                buttonClassName = 'selected'
             } else {
-                buttonsDiv.appendChild(createSubmitButton(result[i].prices.month.interval));
-                buttonsDiv.appendChild(createSubmitButton(result[i].prices.year.interval));
+                buttonClassName = 'button'
+            }
+            // Create the buttons
+            if (currentPlan.name == "Free") {
+                buttonsDiv.appendChild(createSubmitButton(currentPlan.prices.month.interval, buttonClassName));
+            } else {
+                buttonsDiv.appendChild(createSubmitButton(currentPlan.prices.month.interval, buttonClassName));
+                buttonsDiv.appendChild(createSubmitButton(currentPlan.prices.year.interval, buttonClassName));
             }
 
             // Append all
