@@ -1,5 +1,5 @@
-const {Plan} = require('../models/plan')
 const plansRepo = require('../repositories/plansRepo');
+const subsRepo = require('../repositories/subscriptionRepo');
 
 const stripeSecretKey = process.env.STRIPE_SECRET_KEY;
 const stripe = require('stripe')(stripeSecretKey);
@@ -12,7 +12,11 @@ module.exports = {
 
         try {
             let plans = await plansRepo.getPlans();
-            res.send(plans)
+            let currentPlan = await subsRepo.getSubscriptionByClientID(req.params.id)
+            res.json({
+                plans: plans,
+                currentPlan: currentPlan.plan.name
+            })
         } catch (err) {
             logger.error(`failed to fetch plans from DB error: ${err.message}`)
         }

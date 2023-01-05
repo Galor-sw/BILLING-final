@@ -24,16 +24,16 @@ app.use(express.urlencoded({
 }));
 
 //Router uses - CHECK IF IT IS A PROPER WAY TO USE IT
-app.use('/plans', express.json(), plansRouter);
+app.use('/plan-management', express.json(), plansRouter);
 app.use('/subscription', express.json(), subscriptionRouter);
 app.use('/webhook', express.raw({type: "application/json"}), webhooksRouter);
-app.use('/statistic',express.json(),statisticRouter);
+app.use('/statistic', express.json(), statisticRouter);
 
 //load files
-app.use('/user', fileLoaderRouter);
-app.use('/css', express.static(__dirname + '/css'));
-app.use('/js', express.static(__dirname + '/js'));
-app.use('/favicon.ico', express.static('./favicon.ico'));
+app.use('/users', fileLoaderRouter);
+app.use('/users/css', express.static(__dirname + '/css'));
+app.use('/users/js', express.static(__dirname + '/js'));
+app.use('/users/favicon.ico', express.static('./favicon.ico'));
 
 
 //create server
