@@ -73,19 +73,17 @@ header {
     justify-content: space-evenly;
     align-content: space-around;
 }
-
-.button {
-    background-color: #03e9f4;
-    border: none;
-    color: white;
-    padding: 10px 25px;
-    text-align: center;
-    text-decoration: none;
-    font-size: 18px;
-}
-
 .selected {
     color: grey;
+    padding: 10px 20px;
+    background: rgba(0, 0, 0, 0);
+    border: rgba(0, 0, 0, 0);
+    font-size: 16px;
+    text-decoration: none;
+    text-transform: uppercase;
+    transition: .5s;
+    letter-spacing: 4px;
+    border-radius: 5px;
 }
 
 html {
@@ -113,38 +111,13 @@ body {
     border-radius: 10px;
 }
 
-#form-box {
-    padding-bottom: 80px;
-}
 
-.login-box h2 {
+h1 {
     margin: 0 0 30px;
     padding: 0;
     color: #fff;
     text-align: center;
 }
-
-.login-box .user-box, .login-box .user-box2 {
-    position: relative;
-}
-
-.user-box {
-    margin-bottom: 10px;
-}
-
-
-.login-box .user-box input {
-    width: 100%;
-    padding: 10px 0;
-    font-size: 16px;
-    color: #fff;
-    margin-top: 20px;
-    border: none;
-    border-bottom: 1px solid #fff;
-    outline: none;
-    background: transparent;
-}
-
 .login-box input {
     outline: none;
     border-bottom: none;
@@ -158,7 +131,7 @@ body {
     transition: .5s;
 }
 
-.login-box .user-box label {
+.login-box label {
     position: absolute;
     padding: 10px 0;
     pointer-events: none;
@@ -181,14 +154,6 @@ body {
     letter-spacing: 4px;
     border-radius: 5px;
 }
-
-.button_style {
-    position: relative;
-    display: inline-block;
-    border-radius: 5px;
-    overflow: hidden;
-}
-
 .button:hover {
     background: #03e9f4;
     color: #fff;
@@ -197,9 +162,4 @@ body {
     0 0 15px #03e9f4,
     0 0 15px #03e9f4,
     0 0 15px #03e9f4;
-}
-
-.button_style span {
-    position: absolute;
-    display: block;
 }
