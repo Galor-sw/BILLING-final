@@ -73,6 +73,7 @@ header {
     justify-content: space-evenly;
     align-content: space-around;
 }
+
 .selected {
     color: grey;
     padding: 10px 20px;
@@ -84,6 +85,7 @@ header {
     transition: .5s;
     letter-spacing: 4px;
     border-radius: 5px;
+    pointer-events: none;
 }
 
 html {
@@ -118,6 +120,7 @@ h1 {
     color: #fff;
     text-align: center;
 }
+
 .login-box input {
     outline: none;
     border-bottom: none;
@@ -154,6 +157,7 @@ h1 {
     letter-spacing: 4px;
     border-radius: 5px;
 }
+
 .button:hover {
     background: #03e9f4;
     color: #fff;
@@ -162,4 +166,8 @@ h1 {
     0 0 15px #03e9f4,
     0 0 15px #03e9f4,
     0 0 15px #03e9f4;
+}
+
+.selected:hover {
+    /*cursor: default !important;*/
 }
