@@ -2,13 +2,13 @@ const cron = require('node-cron');
 const moment = require("moment");
 const {Subscription} = require('../models/subscriptions')
 const serverLogger = require(`../logger`);
-const sendQueueUpdate = require("../RMQ/rabbitMQ");
+const sendPlanDetailsToIAM = require("../RMQ/rabbitMQ");
 const axios = require('axios').default;
 
 const logger = serverLogger.log;
 
 
-const updateSubscription = (subscription, credits) => {
+const updateSubscription = (subscription) => {
 
     let nextMonth = moment().add(1, 'M').format('YYYY-MM-DD HH:mm:ss');
     let updatedSubscription = new Subscription;
@@ -20,7 +20,7 @@ const updateSubscription = (subscription, credits) => {
             logger.error(`findByIdAndUpdate failed: ${err} to user email: ${subscription.email}`);
         } else {
             logger.info(`Next date subscription updated successfully to user email: ${subscription.email}`);
-            sendQueueUpdate(subscription.email, subscription.plan.credits);
+            sendPlanDetailsToIAM(subscription.email, subscription.plan.seats, subscription.plan.features, subscription.plan.credits);
         }
     })
 }
@@ -42,7 +42,6 @@ const startCronJob = () => {
                     let next_date = moment(subscription.next_date).format(format);
                     let today = moment().format(format);
                     if (next_date == today) {
-
                         updateSubscription(subscription);
                     }
 
