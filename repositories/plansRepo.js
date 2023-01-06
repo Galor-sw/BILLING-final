@@ -5,7 +5,7 @@ module.exports = {
     },
 
     getPlanByName: async (planName) => {
-        const plan = await Plan.find({name: planName});
+        const plan = await Plan.findOne({name: planName});
         return plan;
     }
 }
