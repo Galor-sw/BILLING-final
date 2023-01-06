@@ -16,8 +16,6 @@ const planSchema = new Schema({
     credits: {type: Number, require: true},
     description: {type: String},
     prices: {priceSchema},
-
-
 }, {collection: 'plans', versionKey: false})
 
 const Plan = model('plans', planSchema);

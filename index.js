@@ -12,6 +12,7 @@ const plansRouter = require('./routers/planRouter');
 const webhooksRouter = require('./routers/webhooksRouter');
 const subscriptionRouter = require('./routers/subscriptionRouter');
 const statisticRouter = require('./routers/statisticRouter');
+const listenQueue = require("./RMQ/reciverQueueMessage");
 
 const logger = serverLogger.log;
 const app = express();
@@ -43,8 +44,8 @@ app.listen(process.env.PORT || 3000, () => {
 
 startCron = () => {
     startCronJob();
-    logger.info('cron job started');
+    logger.info('cron job has been set');
 }
-
+listenQueue();
 startCron();
 
