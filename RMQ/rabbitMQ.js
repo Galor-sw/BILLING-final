@@ -17,7 +17,7 @@ const sendPlanDetailsToIAM = (account_id, credits, seats, feauters) => {
             const stringMsg = JSON.stringify(subscriptionDetails);
             ch.assertQueue(q, {durable: false});
             await ch.sendToQueue(q, Buffer.from(stringMsg));
-            logger.info(`RMQ- update free plan message sent to user: ${user_mail} with: ${credits} credits`);
+            logger.info(`RMQ- update free plan message sent to user: ${account_id} with: ${credits} credits`);
 
         })
     })
