@@ -6,7 +6,8 @@ const subscriptionsSchema = new Schema({
     start_date: {type: Date, require: true},
     payment: {type: String, require: true},
     next_date: {type: Date, require: true},
-    renewal: {type: Date, require: true}
+    renewal: {type: Date, require: true},
+    status: {type: String, require: true}
 }, {collection: 'subscriptions', versionKey: false})
 
 const Subscription = model('subscriptions', subscriptionsSchema);

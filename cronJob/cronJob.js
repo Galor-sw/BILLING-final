@@ -2,7 +2,7 @@ const cron = require('node-cron');
 const moment = require("moment");
 const {Subscription} = require('../models/subscriptions')
 const serverLogger = require(`../logger`);
-const sendPlanDetailsToIAM = require("../RMQ/rabbitMQ");
+const sendSubscriptionToIAM = require("../RMQ/senderQueueMessage");
 const axios = require('axios').default;
 
 const logger = serverLogger.log;
@@ -20,7 +20,7 @@ const updateSubscription = (subscription) => {
             logger.error(`findByIdAndUpdate failed: ${err} to user email: ${subscription.email}`);
         } else {
             logger.info(`Next date subscription updated successfully to user email: ${subscription.email}`);
-            sendPlanDetailsToIAM(subscription.email, subscription.plan.seats, subscription.plan.features, subscription.plan.credits);
+            sendSubscriptionToIAM(subscription.accountId, subscription.plan.credits, subscription.plan.seats, subscription.plan.features);
         }
     })
 }
