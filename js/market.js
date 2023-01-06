@@ -1,8 +1,9 @@
 import {url} from './urlService.js';
 
 const urlEndPoint = url();
+const userId = window.location.href.split('/')[4];
 
-$.get(`${urlEndPoint}/plan-management/users/galorstudent@gmail.com/plans`)
+$.get(`${urlEndPoint}/plan-management/users/${userId}/plans`)
     .done((result) => {
 
         // Create container
@@ -11,7 +12,7 @@ $.get(`${urlEndPoint}/plan-management/users/galorstudent@gmail.com/plans`)
         // Create card for each plan
         for (let i in result.plans) {
 
-            // shortcut for exact plan in the loop
+            // shortcut for the plan in the current loop
             const currentPlan = result.plans[i]
 
             let cardFrame = document.createElement('div');
@@ -19,7 +20,7 @@ $.get(`${urlEndPoint}/plan-management/users/galorstudent@gmail.com/plans`)
             let card = document.createElement('ul');
             card.className = 'price';
 
-            // Adding header with plan name
+            // Adding header
             card.appendChild(createLi(currentPlan.name, 'header'));
 
             // Adding prices
@@ -41,37 +42,21 @@ $.get(`${urlEndPoint}/plan-management/users/galorstudent@gmail.com/plans`)
                             <br> 
                             Credits: ${currentPlan.credits}`));
 
-            // Create a new div for the buttons
-            let buttonsDiv = document.createElement('div');
-            buttonsDiv.className = 'buttonsDiv';
-
-            let buttonClassName;
-            // Select buttons class for choosing the current plan
-            if (currentPlan.name == result.currentPlan) {
-                buttonClassName = 'selected'
-            } else {
-                buttonClassName = 'button'
-            }
-            // Create the buttons
-            if (currentPlan.name == "Free") {
-                buttonsDiv.appendChild(createSubmitButton(currentPlan.prices.month.interval, buttonClassName));
-            } else {
-                buttonsDiv.appendChild(createSubmitButton(currentPlan.prices.month.interval, buttonClassName));
-                buttonsDiv.appendChild(createSubmitButton(currentPlan.prices.year.interval, buttonClassName));
-            }
+            // Adding buttons
+            card.appendChild(createButtonsDiv(currentPlan, result.clientPlan));
 
             // Append all
-            card.appendChild(buttonsDiv);
             cardFrame.appendChild(card);
             container.appendChild(cardFrame);
         }
 
         $('input[type="submit"]').click((e) => {
-            let productId = e.target.name;
-            let productJson = {};
-            productJson.id = productId;
-            productJson.quantity = 1;
-            $.post(`${urlEndPoint}/plans`, productJson)
+
+            $.post(`${urlEndPoint}/plan-management/users/${userId}/plans`, {
+                name: e.target.name,
+                interval: e.target.value,
+                quantity: 1
+            })
                 .done((link) => {
                     window.location.replace(link);
                 })
@@ -90,14 +75,39 @@ const createLi = (string, className = '') => {
     return li;
 }
 
-const createSubmitButton = (value, className = 'button', type = 'submit') => {
+const createSubmitButton = (value, planType, className = 'button', type = 'submit') => {
 
     let input = document.createElement('input');
     input.className = className;
     input.type = type;
     input.value = value;
-    input.name = name;
-
+    input.name = planType;
     return input;
 }
 
+const createButtonsDiv = (currentPlan, clientPlan) => {
+
+    // Create a new div for the buttons
+    let buttonsDiv = document.createElement('div');
+    buttonsDiv.className = 'buttonsDiv';
+
+    // create default class
+    let monthClassName = 'button'
+    let yearClassName = 'button'
+
+    // check for selected class
+    if (currentPlan.name == clientPlan.name && clientPlan.type == 'month') {
+        monthClassName = 'selected'
+    } else if (currentPlan.name == clientPlan.name && clientPlan.type == 'year') {
+        yearClassName = 'selected'
+    }
+
+    // create buttons with the required class
+    buttonsDiv.appendChild(createSubmitButton(currentPlan.prices.month.interval, currentPlan.name, monthClassName));
+
+    if (currentPlan.name != "Free") {
+        buttonsDiv.appendChild(createSubmitButton(currentPlan.prices.year.interval, currentPlan.name, yearClassName));
+    }
+
+    return buttonsDiv
+}
