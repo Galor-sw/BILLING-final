@@ -1,5 +1,6 @@
 const cron = require('node-cron');
 const moment = require('moment');
+const URL = process.env.URL;
 const { Subscription } = require('../models/subscriptions');
 const serverLogger = require('../logger');
 const { sendSubscriptionToIAM } = require('../RMQ/senderQueueMessage');
@@ -27,9 +28,9 @@ const updateSubscription = (subscription) => {
 const startCronJob = () => {
   let subscriptions;
   const format = 'YYYY-MM-DD';
-  cron.schedule('00 02 * * *', () => {
+  cron.schedule('00 04 * * *', () => {
     // get all free subscriptions
-    axios.get('http://localhost:5000/subscription/getAllSubscriptionsByPlanName/Free')
+    axios.get(`${URL}/subscription/getAllSubscriptionsByPlanName/Free`)
       .then(subscriptionsResult => {
         subscriptions = subscriptionsResult.data;
       })
