@@ -35,10 +35,13 @@ TODO: add links and missing sections.
 <li>add file: '.env' into config folder </li>
 <li>run: 'npm install'</li>
 <li>run: 'npm run start'</li>
-<li>run: 'http://localhost:5000/' if you are working in development </li>
-<li>run in render: </li>
-<li>mongoDB:</li>
-<li>API DOCS:</li>
+<li>if you are in dev mode change url to 'http://localhost:5000/'</li>
+<li>run in render: https://billing-final-phase1-development.onrender.com/users/63b9727c238a2058c3fe4fb2/plans</li>
+<li>this is example, account_id : 63b9727c238a2058c3fe4fb2 will provide this account plan selected and option to upgrade</li>
+<li>mongoDB: https://cloud.mongodb.com/v2/63aad8f5198ef05c11eb7c72#/metrics/replicaSet/63aada4bc3881d4e4f1ffa14/explorer/billing/plans/find</li>
+<li>Stripe: https://dashboard.stripe.com/login?redirect=%2Ftest%2Fdashboard</li>
+<li>Notion: https://www.notion.so/c3bff7005a344f728a6cae4d66fee5ee?v=4b106978d3754261b125c444ef0fa25c&p=b1cd15ed9f924f28990c6dfed80314fc&pm=s </li>
+<li>API DOCS: </li>
 </ol>
 <h3>Contributing Guidelines</h3>
 TODO: another things you want to add...

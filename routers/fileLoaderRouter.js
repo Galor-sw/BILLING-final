@@ -1,5 +1,5 @@
-const {Router} = require('express');
-const fileLoaderController = require("../controllers/fileLoaderController");
+const { Router } = require('express');
+const fileLoaderController = require('../controllers/fileLoaderController');
 const fileLoaderRouter = Router();
 
 fileLoaderRouter.get('/:id/plans', fileLoaderController.loadLoginFile);

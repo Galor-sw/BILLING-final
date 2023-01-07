@@ -57,5 +57,15 @@ module.exports = {
       res.status(404).send(err.message);
     }
     res.status(200).send(true);
+  },
+
+  changeSubscriptionStatus: async (req, res) => {
+    try {
+      await subsRepo.changeSubscriptionStatus(req.body);
+    } catch (err) {
+      logger.error(`failed to change status: ${err.message}`);
+      res.status(404).send(err.message);
+    }
+    res.status(200).send(true);
   }
 };

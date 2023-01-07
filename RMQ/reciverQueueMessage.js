@@ -52,7 +52,7 @@ const listenQueue = () => {
       const q = 'CloudAMQP';
       ch.consume(q, (msg) => {
         const jsonMessage = (JSON.parse(msg.content.toString()));
-        axios.put(`${URL}/subscription`, jsonMessage)
+        axios.put(`${URL}/subscription/status`, jsonMessage)
           .then(() => {
             logger.info(`message from IAM - ${jsonMessage.accountId} account: ${jsonMessage.status}`);
           })
