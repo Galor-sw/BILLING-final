@@ -10,7 +10,7 @@ module.exports = (() => {
   const invoiceMap = {};
   return ({
     getEvent: async (req, res) => {
-      const endpointSecret = process.env."STRIPE_SECRET_KEY ";
+      const endpointSecret = process.env.STRIPE_SECRET_KEY;
       const sig = req.headers['stripe-signature'];
       let event;
       let session = '';

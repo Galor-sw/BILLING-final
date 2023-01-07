@@ -48,7 +48,7 @@ module.exports = {
     }
     res.status(200).send(result);
   },
-
+ 
   editSubscription: async (req, res) => {
     try {
       await subsRepo.editSubscription(req.body);

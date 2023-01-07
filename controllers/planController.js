@@ -24,7 +24,6 @@ module.exports = {
     try {
       // get the chosen plan
       const plan = await plansRepo.getPlanByName(req.body.name);
-      const planId = plan._id.toString();
 
       // get the right id from the chosen interval
       const priceId = getStripeID(req.body.interval, plan);
@@ -50,7 +49,11 @@ module.exports = {
   },
   getPlanByName: async (req, res) => {
     const plan = await plansRepo.getPlanByName(req.params.name);
-    if (plan) { res.send(plan); } else { res.status(404).send(null); }
+    if (plan) {
+      res.send(plan);
+    } else {
+      res.status(404).send(null);
+    }
   }
 };
 
