@@ -42,7 +42,6 @@ app.listen(process.env.PORT || 3000, () => {
   logger.info(`Server is listening on port ${process.env.PORT}`);
 });
 
-
 const startCron = () => {
   startCronJob();
   logger.info('cron job has been set');
