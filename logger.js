@@ -31,4 +31,3 @@ const log = winston.createLogger({
     })]
 });
 module.exports.log = log;
-
