@@ -1,0 +1,36 @@
+{
+  "dependencies": {
+    "amqplib": "^0.10.3",
+    "axios": "^1.2.2",
+    "cors": "^2.8.5",
+    "date-fns": "^2.29.3",
+    "decision-tree": "^0.3.7",
+    "dotenv": "^16.0.3",
+    "ejs": "^3.1.8",
+    "express": "^4.18.2",
+    "faker": "^5.5.3",
+    "init": "^0.1.2",
+    "lodash": "^4.17.21",
+    "moment": "^2.29.4",
+    "mongoose": "^6.8.2",
+    "node-cron": "^3.0.2",
+    "nodemailer": "^6.8.0",
+    "nodemon": "^2.0.20",
+    "request": "^2.88.2",
+    "stripe": "^11.3.0",
+    "winston": "^3.8.2"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon index.js",
+    "start": "node index.js",
+    "cron": "node cronJob/cronJob.js"
+  },
+  "devDependencies": {
+    "eslint": "^8.31.0",
+    "eslint-config-standard": "^17.0.0",
+    "eslint-plugin-import": "^2.26.0",
+    "eslint-plugin-n": "^15.6.0",
+    "eslint-plugin-promise": "^6.1.1"
+  }
+}
