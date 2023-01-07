@@ -52,7 +52,8 @@ $.get(`${urlEndPoint}/plan-management/users/${userId}/plans`)
       $.post(`${urlEndPoint}/plan-management/users/${userId}/plans`, {
         name: e.target.name,
         interval: e.target.value,
-        quantity: 1
+        quantity: 1,
+        accountId: userId
       })
         .done((link) => {
           window.location.replace(link);

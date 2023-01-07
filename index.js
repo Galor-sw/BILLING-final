@@ -1,5 +1,6 @@
 require('dotenv').config({ path: '.env' });
 require('./mongoConnection');
+const path = require('path');
 
 const express = require('express');
 const serverLogger = require('./logger');
@@ -32,14 +33,15 @@ app.use('/statistic', express.json(), statisticRouter);
 
 // load files
 app.use('/users', fileLoaderRouter);
-app.use('/users/css', express.static(__dirname + '/css'));
-app.use('/users/js', express.static(__dirname + '/js'));
+app.use('/users/css', express.static(path.join(__dirname, '/css')));
+app.use('/users/js', express.static(path.join(__dirname, '/js')));
 app.use('/users/favicon.ico', express.static('./favicon.ico'));
 
 // create server
 app.listen(process.env.PORT || 3000, () => {
   logger.info(`Server is listening on port ${process.env.PORT}`);
 });
+
 
 const startCron = () => {
   startCronJob();

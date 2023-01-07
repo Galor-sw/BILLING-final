@@ -1,11 +1,13 @@
-const {Plan} = require('../models/plan')
+const { Plan } = require('../models/plan');
 module.exports = {
-    getPlans: async () => {
-        return await Plan.find({});
-    },
+  getPlans: () => {
+    return Plan.find({});
+  },
 
-    getPlanByName: async (planName) => {
-        const plan = await Plan.findOne({name: planName});
-        return plan;
-    }
-}
+  getPlanByName: (planName) => {
+    return Plan.findOne({ name: planName });
+  },
+  getPlanByStripeId: (id) => {
+    return Plan.findOne({ StripeID: id });
+  }
+};
