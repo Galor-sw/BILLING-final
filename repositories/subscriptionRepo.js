@@ -21,11 +21,9 @@ module.exports = {
   getSubscriptionByClientID: async (ID) => {
     return Subscription.findOne({ accountId: ID }).populate({ path: 'plan', model: 'plans' });
   },
-  editSubscription: async (id, sub) => {
-    return Subscription.findByIdAndUpdate(id, sub, { new: true })
-      .populate({
-        path: 'plan',
-        model: 'plans'
-      });
+  editSubscription: async (updateSubscriptionDetails) => {
+    const filter = { accountId: updateSubscriptionDetails.accountId };
+    const update = { status: updateSubscriptionDetails.status };
+    return Subscription.findOneAndUpdate(filter, update, { new: true }).populate({ path: 'plan', model: 'plans' });
   }
 };

@@ -2,7 +2,7 @@ const cron = require('node-cron');
 const moment = require('moment');
 const { Subscription } = require('../models/subscriptions');
 const serverLogger = require('../logger');
-const sendSubscriptionToIAM = require('../RMQ/senderQueueMessage');
+const { sendSubscriptionToIAM } = require('../RMQ/senderQueueMessage');
 
 const axios = require('axios').default;
 
@@ -16,7 +16,6 @@ const updateSubscription = (subscription) => {
 
   Subscription.findByIdAndUpdate(subscription._id, updatedSubscription, { new: true }, (err) => {
     if (err) {
-
       logger.error(`findByIdAndUpdate failed: ${err} to user email: ${subscription.email}`);
     } else {
       logger.info(`Next date subscription updated successfully to user email: ${subscription.email}`);
@@ -39,9 +38,9 @@ const startCronJob = () => {
       });
     if (subscriptions) {
       subscriptions.forEach(subscription => {
-        const next_date = moment(subscription.next_date).format(format);
+        const nextDate = moment(subscription.next_date).format(format);
         const today = moment().format(format);
-        if (next_date == today) {
+        if (nextDate === today) {
           updateSubscription(subscription);
         }
       });
