@@ -2,6 +2,7 @@ const amqp = require('amqplib/callback_api');
 const IAMMessageCreateFreePlan = process.env.GET_MESSAGE_FROM_IAM_CREATE_FREE_PLAN;
 const IAMMessageStatusAccount = process.env.GET_MESSAGE_FROM_IAM_ACCOUNT_STATUS_CHANGED;
 const serverLogger = require('../logger');
+const URL = process.env.URL;
 const { sendSubscriptionToIAM } = require('./senderQueueMessage');
 const { default: axios } = require('axios');
 const moment = require('moment/moment');
@@ -14,7 +15,7 @@ const listenQueue = () => {
     conn.createChannel((err, ch) => {
       const q = 'CloudAMQP';
       let freePlan;
-      axios.get('http://localhost:5000/plan-management/Free')
+      axios.get(`${URL}/plan-management/Free`)
         .then((result) => {
           freePlan = result.data;
         })
@@ -34,7 +35,7 @@ const listenQueue = () => {
           renewal: moment().add(1, 'Y').format(format),
           status: 'active'
         };
-        axios.post('http://localhost:5000/subscription/new', jsonFree)
+        axios.post(`${URL}/subscription/new`, jsonFree)
           .then((result) => {
             logger.info(`message from IAM - set free plan to: ${jsonMessage.accountId}`);
             sendSubscriptionToIAM(jsonFree.accountId, freePlan.credits, freePlan.seats, freePlan.features);
@@ -51,7 +52,7 @@ const listenQueue = () => {
       const q = 'CloudAMQP';
       ch.consume(q, (msg) => {
         const jsonMessage = (JSON.parse(msg.content.toString()));
-        axios.put('http://localhost:5000/subscription', jsonMessage)
+        axios.put(`${URL}/subscription`, jsonMessage)
           .then(() => {
             logger.info(`message from IAM - ${jsonMessage.accountId} account: ${jsonMessage.status}`);
           })

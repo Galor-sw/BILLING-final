@@ -1,6 +1,6 @@
 const plansRepo = require('../repositories/plansRepo');
 const subsRepo = require('../repositories/subscriptionRepo');
-
+const URL = process.env.URL;
 const stripeSecretKey = process.env.STRIPE_SECRET_KEY;
 const stripe = require('stripe')(stripeSecretKey);
 
@@ -31,16 +31,14 @@ module.exports = {
       // create a stripe session that's send the client to the stripe payment page
       const session = await stripe.checkout.sessions.create({
         // const session = await stripe.subscriptions.create({
-        success_url: 'http://localhost:5000/message',
-        cancel_url: 'http://localhost:5000/message',
+        success_url: `${URL}/message`,
+        cancel_url: `${URL}/message`,
         line_items: [
           { price: priceId, quantity: req.body.quantity }
         ],
         mode: 'subscription',
-        // payment_intent_data: {metadata: {account}},
         metadata: { account }
       });
-      // const urlCheckOut = `${session.url}?accountId=${account}`;
       const urlCheckOut = session.url;
       res.send(urlCheckOut);
     } catch (err) {
