@@ -29,7 +29,7 @@ app.use(express.urlencoded({
 app.use('/plan-management', express.json(), plansRouter);
 app.use('/subscription', express.json(), subscriptionRouter);
 app.use('/webhook', express.raw({ type: 'application/json' }), webhooksRouter);
-app.use('/statistic', express.json(), statisticRouter);
+app.use('/statistics', express.json(), statisticRouter);
 
 // load files
 app.use('/users', fileLoaderRouter);
