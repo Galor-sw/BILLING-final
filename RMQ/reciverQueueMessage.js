@@ -23,13 +23,13 @@ const listenQueue = () => {
       const q = 'CloudAMQP';
       ch.consume(q, (msg) => {
         const jsonMessage = (JSON.parse(msg.content.toString()));
-        axios.put('http://localhost:5000/subscription', jsonMessage)
-          .then(() => {
-            logger.info(`message from IAM - ${jsonMessage.accountId} account: ${jsonMessage.status}`);
-          })
-          .catch(err => {
-            logger.error(`error in request in cron.schedule: ${err.message}`);
-          });
+        logger.info(`message from IAM - ${jsonMessage.accountId} account: ${jsonMessage.status}`);
+        // axios.put('http://localhost:5000/subscription', jsonMessage)
+        //   .then(() => {
+        //   })
+        //   .catch(err => {
+        //     logger.error(`error in request in cron.schedule: ${err.message}`);
+        //   });
       }, { noAck: true });
     });
   });
