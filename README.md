@@ -2,7 +2,8 @@
 <h2>A service that allows clients to manage plans and subscriptions
 and charge the client's users accordingly</h2>
 <h3>Description:</h3>
-<ol>The service will have three plans:
+The service will have three plans:
+<ol>
 <li>Free</li>
 <li>Pro</li>
 <li>Premium</li>
@@ -12,8 +13,14 @@ The services will show the  client's user which subscription he owns.
 THe client's user will be able to choose another plan.
 The service will charge the client's user accordingly (and it will do a renewal for the subscription in an interval of time).
 <h3>Working of the project</h3>
-TODO: add diagrams and flows from the run time of the project and every part explain.
-
+<p>Sequence diagram</p>
+![image](https://user-images.githubusercontent.com/80041527/211164192-7988d540-392b-455d-8438-896527b7a97c.png)
+<p>ERD</p>
+<img width="189" alt="image" src="https://user-images.githubusercontent.com/80041527/211164340-bc1176e3-32f2-46b4-8103-bb2f113b48bd.png">
+<p>Flow diagram- purchase</p>
+![image](https://user-images.githubusercontent.com/80041527/211164378-57259be2-5b9a-47eb-9b36-5d0eabd8e0e4.png)
+<p>Flow diagram- renewal</p>
+![image](https://user-images.githubusercontent.com/80041527/211164424-bc511327-6c83-4b08-a83f-2183586ee084.png)
 <p>Select plan you want to buy.</p>
 <img width="960" alt="image" src="https://user-images.githubusercontent.com/80041527/211153758-ddd827b6-3853-4a75-82d1-9b33401a0622.png">
 <p>The selection will take you to an appropriate Stripe purchase page</p>
