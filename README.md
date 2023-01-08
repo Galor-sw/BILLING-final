@@ -16,7 +16,7 @@ The service will charge the client's user accordingly (and it will do a renewal 
 <p>Sequence diagram</p>
 <img width="335" alt="image" src="https://user-images.githubusercontent.com/80041527/211177017-a4996035-e9cf-443b-a2d6-116f3c8dd71d.png">
 <p>ERD</p>
-<img width="189" alt="image" src="https://user-images.githubusercontent.com/80041527/211164340-bc1176e3-32f2-46b4-8103-bb2f113b48bd.png">
+<img width="183" alt="image" src="https://user-images.githubusercontent.com/80041527/211177586-9f19ddb5-4362-4fcf-858f-a742fb4a0945.png">
 <p>Flow diagram- purchase</p>
 <img width="177" alt="image" src="https://user-images.githubusercontent.com/80041527/211177042-3e2dad95-52e5-4470-8caa-c2f2b97bd8c2.png">
 <p>Flow diagram- renewal</p>
