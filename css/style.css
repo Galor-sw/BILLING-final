@@ -104,7 +104,7 @@ body {
     top: 50%;
     left: 50%;
     min-width: 790px;
-    max-height: 550px;
+    max-height: 700px;
     padding: 40px;
     transform: translate(-50%, -50%);
     background: rgba(0, 0, 0, .5);

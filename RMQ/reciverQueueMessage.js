@@ -15,12 +15,12 @@ const listenQueue = () => {
     conn.createChannel((err, ch) => {
       const q = 'CloudAMQP';
       let freePlan;
-      axios.get(`${URL}/plan-management/Free`)
+      axios.get(`${URL}/accounts/any/plans/Free`)
         .then((result) => {
           freePlan = result.data;
         })
         .catch(err => {
-          logger.error(`error loading plan from DB ${err.message}`);
+          logger.error(`error loading plans from DB: ${err.message}`);
         });
 
       ch.consume(q, (msg) => {
@@ -35,7 +35,7 @@ const listenQueue = () => {
           renewal: moment().add(1, 'Y').format(format),
           status: 'active'
         };
-        axios.post(`${URL}/subscription/new`, jsonFree)
+        axios.post(`${URL}/subscription/`, jsonFree)
           .then((result) => {
             logger.info(`message from IAM - set free plan to: ${jsonMessage.accountId}`);
             sendSubscriptionToIAM(jsonFree.accountId, freePlan.credits, freePlan.seats, freePlan.features);

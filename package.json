@@ -12,6 +12,7 @@
     "init": "^0.1.2",
     "lodash": "^4.17.21",
     "moment": "^2.29.4",
+    "moment-timezone": "^0.5.40",
     "mongoose": "^6.8.2",
     "node-cron": "^3.0.2",
     "nodemailer": "^6.8.0",
