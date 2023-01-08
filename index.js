@@ -27,7 +27,7 @@ app.use(express.urlencoded({
 // Router uses - CHECK IF IT IS A PROPER WAY TO USE IT
 app.use('/accounts', express.json(), plansRouter);
 app.use('/subscription', express.json(), subscriptionRouter);
-app.use('/webhook', webhooksRouter);
+app.use('/webhook', express.raw({ type: '*/*' }), webhooksRouter);
 app.use('/statistics', express.json(), statisticRouter);
 
 // load files
