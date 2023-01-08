@@ -6,12 +6,8 @@ module.exports = {
     return await newSubscription.save();
   },
 
-  getAllSubscription: async () => {
+  getAllSubscriptions: async () => {
     return Subscription.find({}).populate({ path: 'plan', model: 'plans' });
-  },
-
-  getSubscriptionByID: async (ID) => {
-    return Subscription.findById(ID).populate({ path: 'plan', model: 'plans' });
   },
 
   getAllSubscriptionsByPlanID: async (plan) => {
@@ -21,14 +17,22 @@ module.exports = {
   getSubscriptionByClientID: async (ID) => {
     return Subscription.findOne({ accountId: ID }).populate({ path: 'plan', model: 'plans' });
   },
+
   getSubscriptionByCustomerID: async (ID) => {
     return Subscription.findOne({ customerId: ID }).populate({ path: 'plan', model: 'plans' });
   },
+
   editSubscription: async (id, sub) => {
     return Subscription.findByIdAndUpdate(id, sub, { new: true })
       .populate({
         path: 'plan',
         model: 'plans'
       });
+  },
+
+  changeSubscriptionStatus: async (updateSubscriptionDetails) => {
+    const filter = { accountId: updateSubscriptionDetails.accountId };
+    const update = { status: updateSubscriptionDetails.status };
+    return Subscription.findOneAndUpdate(filter, update, { new: true }).populate({ path: 'plan', model: 'plans' });
   }
 };

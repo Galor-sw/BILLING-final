@@ -1,13 +1,22 @@
 const plansRepo = require('../repositories/plansRepo');
 const subsRepo = require('../repositories/subscriptionRepo');
-
+const URL = process.env.URL;
 const stripeSecretKey = process.env.STRIPE_SECRET_KEY;
 const stripe = require('stripe')(stripeSecretKey);
 
 const serverLogger = require('../logger');
+const path = require('path');
 const logger = serverLogger.log;
 
 module.exports = {
+  sendHtmlFile: (req, res) => {
+    res.sendFile(path.join(__dirname, '../loginAndForm/market.html'));
+  },
+
+  sendMassageFile: (req, res) => {
+    res.sendFile(path.join(__dirname, '../loginAndForm/message.html'));
+  },
+
   getAllPlans: async (req, res) => {
     try {
       const plans = await plansRepo.getPlans();
@@ -31,8 +40,8 @@ module.exports = {
       // create a stripe session that's send the client to the stripe payment page
       const session = await stripe.checkout.sessions.create({
         // const session = await stripe.subscriptions.create({
-        success_url: 'http://localhost:5000/message',
-        cancel_url: 'http://localhost:5000/message',
+        success_url: `${URL}/accounts/any/message`,
+        cancel_url: `${URL}/accounts/any/message`,
         line_items: [
           { price: priceId, quantity: req.body.quantity }
         ],
@@ -48,7 +57,7 @@ module.exports = {
     }
   },
   getPlanByName: async (req, res) => {
-    const plan = await plansRepo.getPlanByName(req.params.name);
+    const plan = await plansRepo.getPlanByName(req.params.plan);
     if (plan) {
       res.send(plan);
     } else {

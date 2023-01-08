@@ -3,7 +3,7 @@ import { url } from './urlService.js';
 const urlEndPoint = url();
 const userId = window.location.href.split('/')[4];
 
-$.get(`${urlEndPoint}/plan-management/users/${userId}/plans`)
+$.get(`${urlEndPoint}/accounts/${userId}/plans`)
   .done((result) => {
     // Create container
     const container = document.getElementsByClassName('container')[0];
@@ -40,6 +40,15 @@ $.get(`${urlEndPoint}/plan-management/users/${userId}/plans`)
                             <br> 
                             Credits: ${currentPlan.credits}`));
 
+      // adding features
+      card.appendChild(createLi(`Features:
+                                        <br>
+                                        ${currentPlan.features[0]}
+                                        <br>
+                                        ${currentPlan.features[1]}
+                                        <br>
+                                        ${currentPlan.features[2]}`));
+
       // Adding buttons
       card.appendChild(createButtonsDiv(currentPlan, result.clientPlan));
 
@@ -49,7 +58,7 @@ $.get(`${urlEndPoint}/plan-management/users/${userId}/plans`)
     }
 
     $('input[type="submit"]').click((e) => {
-      $.post(`${urlEndPoint}/plan-management/users/${userId}/plans`, {
+      $.post(`${urlEndPoint}/accounts/${userId}/plans`, {
         name: e.target.name,
         interval: e.target.value,
         quantity: 1,
