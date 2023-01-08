@@ -31,9 +31,9 @@ app.use('/webhook', express.raw({ type: 'application/json' }), webhooksRouter);
 app.use('/statistics', express.json(), statisticRouter);
 
 // load files
-app.use('/accounts/css', express.static(path.join(__dirname, '/css')));
-app.use('/accounts/js', express.static(path.join(__dirname, '/js')));
-app.use('/accounts/favicon.ico', express.static('./favicon.ico'));
+app.use('/css', express.static(path.join(__dirname, '/css')));
+app.use('/js', express.static(path.join(__dirname, '/js')));
+
 
 // create server
 app.listen(process.env.PORT || 3000, () => {
