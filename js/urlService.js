@@ -1,3 +1,3 @@
 export const url = () => {
-  return 'https://billing-final-phase1-development.onrender.com';
+  return 'https://billing-final-phase1-master.onrender.com';
 };
