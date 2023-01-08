@@ -41,8 +41,6 @@ module.exports = {
       const start = getUnixTime(new Date(`${req.params.year}-01-01T00:00:01Z`));
       const end = getUnixTime(new Date(`${req.params.year}-12-31T23:59:59Z`));
 
-      console.log(new Date(`${req.params.year}-01-01T00:00:01Z`));
-      console.log(new Date(`${req.params.year}-12-31T23:59:59Z`));
       const amountTotal = await staticRepo.getStatisticsByRange(start, end);
       await res.send(amountTotal.toString());
     } catch (err) {
