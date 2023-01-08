@@ -19,12 +19,11 @@ const app = express();
 
 app.set('view engine', 'ejs');
 app.use(cors({ origin: true })); // enable origin cors
-// app.use(express.json()); NEEDED TO REMOVE IT FOR THE WEBHOOK TO SUCCEESS
 app.use(express.urlencoded({
   extended: true
 }));
 
-// Router uses - CHECK IF IT IS A PROPER WAY TO USE IT
+// Router uses
 app.use('/accounts', express.json(), plansRouter);
 app.use('/subscription', express.json(), subscriptionRouter);
 app.use('/webhook', express.raw({ type: '*/*' }), webhooksRouter);
