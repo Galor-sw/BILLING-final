@@ -25,9 +25,11 @@ module.exports = (() => {
 
       switch (event.type) {
         case 'checkout.session.completed':
+          console.log('&&&&&&&&&&&&&&&&&&&&&&&&&&&');
           if (!invoiceMap[event.data.object.invoice]) {
             invoiceMap[event.data.object.invoice] = event.data.object.metadata.account;
           }
+          console.log('event.data.object.metadata.account');
           break;
         case 'invoice.payment_succeeded':
           session = event.data.object;
@@ -36,8 +38,10 @@ module.exports = (() => {
           const end = moment.utc(session.lines.data[0].period.end * 1000).toString();
           const start = moment.utc(session.lines.data[0].period.start * 1000).toString();
           try {
+            console.log(session.lines.data[0].plan.product);
             const subscription = await subsRepo.getSubscriptionByClientID(id);
             const plan = await plansRepo.getPlanByStripeId(session.lines.data[0].plan.product);
+            console.log(plan._id.toString());
             const jsonObj = {
               accountId: id,
               plan: plan._id.toString(),
