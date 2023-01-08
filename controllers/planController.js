@@ -40,14 +40,9 @@ module.exports = {
       const account = req.params.id.toString();
 
       if (plan.name == 'Free') {
-        // canceling the payment at period time & update the mongoDB
+        // canceling the payment at the period time
         const subscription = await subsRepo.getSubscriptionByClientID(req.body.accountId);
         session = await stripe.subscriptions.update(subscription.stripeSubId, { cancel_at_period_end: true });
-        const jsonObj = {
-          plan: plan._id.toString(),
-          payment: req.body.interval
-        };
-        await subsRepo.editSubscription(subscription._id.toString(), jsonObj);
         res.send(`${URL}/accounts/any/message`);
       } else {
         // create a stripe session that's send the client to the stripe payment page
