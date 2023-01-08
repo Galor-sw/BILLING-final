@@ -19,6 +19,7 @@ module.exports = (() => {
       let session = '';
       try {
         event = stripe.webhooks.constructEvent(req.body, sig, endpointSecret);
+        console.log('after stripe webhooks constructEvent');
       } catch (err) {
         res.status(404).send(`Webhook Error: ${err.message}`);
         return;
