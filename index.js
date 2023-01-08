@@ -1,6 +1,5 @@
 require('dotenv').config({ path: '.env' });
 require('./mongoConnection');
-const bodyparser = require('body-parser');
 const path = require('path');
 
 const express = require('express');
@@ -26,7 +25,7 @@ app.use(express.urlencoded({
 
 app.use('/accounts', express.json(), plansRouter);
 app.use('/subscription', express.json(), subscriptionRouter);
-app.use('/webhook', bodyparser.raw({ type: '*/*' }), webhooksRouter);
+app.use('/webhook', express.raw({ type: '*/*' }), webhooksRouter);
 app.use('/statistics', express.json(), statisticRouter);
 
 // load files
