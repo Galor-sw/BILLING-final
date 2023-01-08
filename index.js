@@ -34,7 +34,6 @@ app.use('/statistics', express.json(), statisticRouter);
 app.use('/css', express.static(path.join(__dirname, '/css')));
 app.use('/js', express.static(path.join(__dirname, '/js')));
 
-
 // create server
 app.listen(process.env.PORT || 3000, () => {
   logger.info(`Server is listening on port ${process.env.PORT}`);
