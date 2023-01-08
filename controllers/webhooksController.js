@@ -12,15 +12,12 @@ module.exports = (() => {
   const invoiceMap = {};
   return ({
     getEvent: async (req, res) => {
-      console.log('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@');
       const endpointSecret = process.env.END_POINT_STRIPE;
       const sig = req.headers['stripe-signature'];
       let event;
       let session = '';
       try {
-        console.log('before stripe webhooks constructEvent');
-        event = stripe.webhooks.constructEvent(req.body, sig, endpointSecret);
-        console.log('after stripe webhooks constructEvent');
+        event = await stripe.webhooks.constructEvent(req.body, sig, endpointSecret);
       } catch (err) {
         res.status(404).send(`Webhook Error: ${err.message}`);
         return;
