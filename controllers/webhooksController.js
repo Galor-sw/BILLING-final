@@ -13,7 +13,7 @@ module.exports = (() => {
   return ({
     getEvent: async (req, res) => {
       console.log('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@');
-      const endpointSecret = process.env.STRIPE_SECRET_KEY;
+      const endpointSecret = process.env.END_POINT_STRIPE;
       const sig = req.headers['stripe-signature'];
       let event;
       let session = '';
