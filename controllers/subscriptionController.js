@@ -40,7 +40,7 @@ module.exports = {
 
   editSubscription: async (req, res) => {
     try {
-      await subsRepo.editSubscription(req.body);
+      await subsRepo.editSubscription(req.body.subId, req.body.newSub);
     } catch (err) {
       logger.error(`failed to update subscription: ${err.message}`);
       res.status(404).send(err.message);
