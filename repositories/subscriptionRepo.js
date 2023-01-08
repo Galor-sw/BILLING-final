@@ -6,12 +6,8 @@ module.exports = {
     return await newSubscription.save();
   },
 
-  getAllSubscription: async () => {
+  getAllSubscriptions: async () => {
     return Subscription.find({}).populate({ path: 'plan', model: 'plans' });
-  },
-
-  getSubscriptionByID: async (ID) => {
-    return Subscription.findById(ID).populate({ path: 'plan', model: 'plans' });
   },
 
   getAllSubscriptionsByPlanID: async (plan) => {

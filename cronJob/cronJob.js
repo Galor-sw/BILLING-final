@@ -30,7 +30,7 @@ const startCronJob = () => {
   const format = 'YYYY-MM-DD';
   cron.schedule('00 04 * * *', () => {
     // get all free subscriptions
-    axios.get(`${URL}/subscription/getAllSubscriptionsByPlanName/Free`)
+    axios.get(`${URL}/subscription/Free`)
       .then(subscriptionsResult => {
         subscriptions = subscriptionsResult.data;
       })

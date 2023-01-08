@@ -8,7 +8,6 @@ const cors = require('cors');
 const startCronJob = require('./cronJob/cronJob');
 
 // Routers
-const fileLoaderRouter = require('./routers/fileLoaderRouter');
 const plansRouter = require('./routers/planRouter');
 const webhooksRouter = require('./routers/webhooksRouter');
 const subscriptionRouter = require('./routers/subscriptionRouter');
@@ -26,16 +25,15 @@ app.use(express.urlencoded({
 }));
 
 // Router uses - CHECK IF IT IS A PROPER WAY TO USE IT
-app.use('/plan-management', express.json(), plansRouter);
+app.use('/accounts', express.json(), plansRouter);
 app.use('/subscription', express.json(), subscriptionRouter);
 app.use('/webhook', express.raw({ type: 'application/json' }), webhooksRouter);
 app.use('/statistics', express.json(), statisticRouter);
 
 // load files
-app.use('/users', fileLoaderRouter);
-app.use('/users/css', express.static(path.join(__dirname, '/css')));
-app.use('/users/js', express.static(path.join(__dirname, '/js')));
-app.use('/users/favicon.ico', express.static('./favicon.ico'));
+app.use('/accounts/css', express.static(path.join(__dirname, '/css')));
+app.use('/accounts/js', express.static(path.join(__dirname, '/js')));
+app.use('/accounts/favicon.ico', express.static('./favicon.ico'));
 
 // create server
 app.listen(process.env.PORT || 3000, () => {
