@@ -43,12 +43,7 @@ TODO: add links and missing sections.
 <li>Notion: https://www.notion.so/c3bff7005a344f728a6cae4d66fee5ee?v=4b106978d3754261b125c444ef0fa25c&p=b1cd15ed9f924f28990c6dfed80314fc&pm=s </li>
 <li>API DOCS: </li>
 </ol>
-<h3>Contributing Guidelines</h3>
-TODO: another things you want to add...
-<h3>License</h3>
-TODO: ask DAVID
-
-
+<h3>MIT License</h3>
 
 <h3>credits:</h3>
 <h4>The Team-</h4>
