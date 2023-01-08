@@ -1,5 +1,5 @@
 const changeLocation = () => {
-  document.location.href = 'https://www.ynet.co.il/home/0,7340,L-8,00.html';
+  document.location.href = 'https://iam-shenkar.onrender.com';
 };
 
 setTimeout(changeLocation, 5000);
