@@ -8,7 +8,8 @@ const subscriptionsSchema = new Schema({
   next_date: { type: Date, require: true },
   renewal: { type: Date, require: true },
   status: { type: String, require: true },
-  customerId: { type: String, require: true }
+  customerId: { type: String, require: true },
+  stripeSubId: { type: String, require: true }
 }, { collection: 'subscriptions', versionKey: false });
 
 const Subscription = model('subscriptions', subscriptionsSchema);
