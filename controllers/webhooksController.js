@@ -12,12 +12,12 @@ module.exports = (() => {
   const invoiceMap = {};
   return ({
     getEvent: async (req, res) => {
-      const endpointSecret = process.env.STRIPE_SECRET_KEY;
+      const endpointSecret = process.env.END_POINT_STRIPE;
       const sig = req.headers['stripe-signature'];
       let event;
       let session = '';
       try {
-        event = stripe.webhooks.constructEvent(req.body, sig, endpointSecret);
+        event = await stripe.webhooks.constructEvent(req.body, sig, endpointSecret);
       } catch (err) {
         res.status(404).send(`Webhook Error: ${err.message}`);
         return;
@@ -46,7 +46,8 @@ module.exports = (() => {
               payment: session.lines.data[0].plan.interval,
               renewal: end,
               status: 'active',
-              customerId: session.customer
+              customerId: session.customer,
+              stripeSubId: session.subscription
             };
             sendSubscriptionToIAM(id, plan.credits, plan.seats, plan.features);
             logger.info(`${id}'s details sent to IAM team.`);
@@ -82,8 +83,8 @@ module.exports = (() => {
           break;
         case 'invoice.payment_failed':
           session = event.data.object;
-          const endDate = new Date(session.lines.data[0].period.end);
-          const startDate = new Date(session.lines.data[0].period.start);
+          const endDate = moment.utc(session.lines.data[0].period.end * 1000).toString();
+          const startDate = moment.utc(session.lines.data[0].period.start * 1000).toString();
           try {
             const subscription = await subsRepo.getSubscriptionByCustomerID(session.customer);
             const plan = await plansRepo.getPlanByStripeId(session.lines.data[0].price.product);
@@ -94,12 +95,39 @@ module.exports = (() => {
               next_date: endDate,
               renewal: endDate,
               status: 'suspended',
-              customerId: session.customer
+              customerId: session.customer,
+              stripeSubId: session.subscription
             };
             await subsRepo.editSubscription(subscription._id.toString(), jsonObj);
             sendSuspendedAccountToIAM(subscription.accountId);
             logger.info(`${subscription.accountId}'s details sent to IAM team.`);
             logger.info(`${subscription.accountId} subscription was suspended.`);
+          } catch (err) {
+            logger.error(`failed to Update the repository: ${err.message}`);
+            res.status(404).send(err.message);
+          }
+          break;
+        case 'customer.subscription.deleted':
+          session = event.data.object;
+          const date = moment.utc(session.ended_at * 1000).toString();
+          const nextDate = new Date();
+          nextDate.setDate(nextDate.getDate() + 1);
+          try {
+            const subscription = await subsRepo.getSubscriptionByCustomerID(session.customer);
+            const plan = await plansRepo.getPlanByName('Free');
+            const jsonObj = {
+              plan: plan._id.toString(),
+              start_date: date,
+              next_date: nextDate,
+              renewal: date,
+              status: 'active',
+              customerId: session.customer,
+              stripeSubId: ''
+            };
+            await subsRepo.editSubscription(subscription._id.toString(), jsonObj);
+            logger.info(`${subscription.accountId} subscription was updated.`);
+            sendSubscriptionToIAM(subscription.accountId, plan.credits, plan.seats, plan.features);
+            logger.info(`${subscription.accountId}'s details sent to IAM team.`);
           } catch (err) {
             logger.error(`failed to Update the repository: ${err.message}`);
             res.status(404).send(err.message);

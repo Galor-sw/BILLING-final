@@ -20,35 +20,43 @@ module.exports = {
   getAllPlans: async (req, res) => {
     try {
       const plans = await plansRepo.getPlans();
-      const clientPlan = await subsRepo.getSubscriptionByClientID(req.params.id);
+      const clientSub = await subsRepo.getSubscriptionByClientID(req.params.id);
       res.json({
         plans,
-        clientPlan: { name: clientPlan.plan.name, type: clientPlan.payment }
+        clientPlan: { name: clientSub.plan.name, type: clientSub.payment }
       });
     } catch (err) {
       logger.error(`failed to fetch plans from DB error: ${err.message}`);
     }
   },
   purchasePlan: async (req, res) => {
+    let session;
     try {
       // get the chosen plan
       const plan = await plansRepo.getPlanByName(req.body.name);
-      // get the right id from the chosen interval
+
+      // get the right id's from the chosen interval
       const priceId = getStripeID(req.body.interval, plan);
       const account = req.params.id.toString();
-      // create a stripe session that's send the client to the stripe payment page
-      const session = await stripe.checkout.sessions.create({
-        // const session = await stripe.subscriptions.create({
-        success_url: `${URL}/accounts/any/message`,
-        cancel_url: `${URL}/accounts/any/message`,
-        line_items: [
-          { price: priceId, quantity: req.body.quantity }
-        ],
-        mode: 'subscription',
-        // payment_intent_data: {metadata: {account}},
-        metadata: { account }
-      });
-      // const urlCheckOut = `${session.url}?accountId=${account}`;
+
+      if (plan.name == 'Free') {
+        // canceling the payment at the period time
+        const subscription = await subsRepo.getSubscriptionByClientID(req.body.accountId);
+        session = await stripe.subscriptions.update(subscription.stripeSubId, { cancel_at_period_end: true });
+        res.send(`${URL}/accounts/any/message`);
+      } else {
+        // create a stripe session that's send the client to the stripe payment page
+        session = await stripe.checkout.sessions.create({
+          success_url: `${URL}/accounts/any/message`,
+          cancel_url: `${URL}/accounts/any/message`,
+          line_items: [
+            { price: priceId, quantity: req.body.quantity }
+          ],
+          mode: 'subscription',
+          metadata: { account }
+        });
+      }
+
       const urlCheckOut = session.url;
       res.send(urlCheckOut);
     } catch (err) {
