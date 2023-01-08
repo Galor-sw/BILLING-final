@@ -33,7 +33,6 @@ module.exports = {
     try {
       // get the chosen plan
       const plan = await plansRepo.getPlanByName(req.body.name);
-
       // get the right id from the chosen interval
       const priceId = getStripeID(req.body.interval, plan);
       const account = req.params.id.toString();
