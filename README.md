@@ -14,13 +14,13 @@ THe client's user will be able to choose another plan.
 The service will charge the client's user accordingly (and it will do a renewal for the subscription in an interval of time).
 <h3>Working of the project</h3>
 <p>Sequence diagram</p>
-![image](https://user-images.githubusercontent.com/80041527/211164192-7988d540-392b-455d-8438-896527b7a97c.png)
+<img width="335" alt="image" src="https://user-images.githubusercontent.com/80041527/211177017-a4996035-e9cf-443b-a2d6-116f3c8dd71d.png">
 <p>ERD</p>
 <img width="189" alt="image" src="https://user-images.githubusercontent.com/80041527/211164340-bc1176e3-32f2-46b4-8103-bb2f113b48bd.png">
 <p>Flow diagram- purchase</p>
-![image](https://user-images.githubusercontent.com/80041527/211164378-57259be2-5b9a-47eb-9b36-5d0eabd8e0e4.png)
+<img width="177" alt="image" src="https://user-images.githubusercontent.com/80041527/211177042-3e2dad95-52e5-4470-8caa-c2f2b97bd8c2.png">
 <p>Flow diagram- renewal</p>
-![image](https://user-images.githubusercontent.com/80041527/211164424-bc511327-6c83-4b08-a83f-2183586ee084.png)
+<img width="180" alt="image" src="https://user-images.githubusercontent.com/80041527/211177094-b438a636-d937-4699-8a86-11028a4f6c7e.png">
 <p>Select plan you want to buy.</p>
 <img width="960" alt="image" src="https://user-images.githubusercontent.com/80041527/211153758-ddd827b6-3853-4a75-82d1-9b33401a0622.png">
 <p>The selection will take you to an appropriate Stripe purchase page</p>
