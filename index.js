@@ -27,13 +27,12 @@ app.use(express.urlencoded({
 // Router uses - CHECK IF IT IS A PROPER WAY TO USE IT
 app.use('/accounts', express.json(), plansRouter);
 app.use('/subscription', express.json(), subscriptionRouter);
-app.use('/webhook', express.raw({ type: 'application/json' }), webhooksRouter);
+app.use('/webhook', webhooksRouter);
 app.use('/statistics', express.json(), statisticRouter);
 
 // load files
 app.use('/css', express.static(path.join(__dirname, '/css')));
 app.use('/js', express.static(path.join(__dirname, '/js')));
-
 
 // create server
 app.listen(process.env.PORT || 3000, () => {
