@@ -1,0 +1,8 @@
+2023-01-14 19:00:21 : info : listening to IAM queues
+2023-01-14 19:00:21 : info : listening to IAM queues
+2023-01-14 19:00:22 : info : cron job has been set
+2023-01-14 19:00:22 : info : Server is listening on port 5000
+2023-01-14 19:00:22 : info : cron job has been set
+2023-01-14 19:00:22 : info : Server is listening on port 5000
+2023-01-14 19:00:23 : info : successfully connected to mongoDB
+2023-01-14 19:00:23 : info : successfully connected to mongoDB
