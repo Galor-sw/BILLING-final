@@ -17,7 +17,7 @@ const sendSubscriptionToIAM = (accountId, credits, seats, featuers) => {
       const stringMsg = JSON.stringify(subscriptionDetails);
       ch.assertQueue(q, { durable: false });
       await ch.sendToQueue(q, Buffer.from(stringMsg));
-      logger.info(`message to IAM -> update free plan set to user: ${accountId}`);
+      logger.info(`message to IAM -> update plan to user: ${accountId}`);
     });
   });
 };
