@@ -51,6 +51,8 @@ const startCronJob = () => {
     scheduled: true,
     timezone: 'Israel'
   });
+
+  logger.info('cron job has been set');
 };
 
 module.exports = startCronJob;
