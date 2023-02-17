@@ -1,3 +1,5 @@
+require('dotenv').config({ path: '.env' });
+
 const Server = require('./src/Server');
 const startCronJob = require('./src/cronJob/cronJob');
 const listenQueue = require('./src/RMQ/reciverQueueMessage');

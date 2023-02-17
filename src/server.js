@@ -1,10 +1,7 @@
-require('dotenv').config({ path: '.env' });
-
 const path = require('path');
 const express = require('express');
 const serverLogger = require('./logger');
 const cors = require('cors');
-const mongoose = require('mongoose');
 
 // Routers
 const plansRouter = require('./routers/planRouter');
