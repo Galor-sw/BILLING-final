@@ -50,23 +50,7 @@ module.exports = class server {
     this.app.listen(port, () => this.logger.info(`Server is listening on port ${process.env.PORT}`));
   }
 
-  async connectStorage () {
-    const options = {
-      useNewUrlParser: true, // For deprecation warnings
-      useUnifiedTopology: true // For deprecation warnings
-    };
-
-    try {
-      mongoose.set('strictQuery', false);
-      await mongoose.connect(process.env.DB_HOST, options);
-      this.logger.info('successfully connected to mongoDB');
-    } catch (err) {
-      this.logger.error(`connection error: ${err.message}`);
-    }
-  }
-
   async start () {
-    await this.connectStorage();
     await this.listen();
   }
 };
