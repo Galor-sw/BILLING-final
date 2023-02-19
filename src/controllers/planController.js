@@ -10,11 +10,11 @@ const logger = serverLogger.log;
 
 module.exports = {
   sendHtmlFile: (req, res) => {
-    res.sendFile(path.join(__dirname, '../loginAndForm/market.html'));
+    res.sendFile(path.join(__dirname, '../../public/loginAndForm/market.html'));
   },
 
   sendMassageFile: (req, res) => {
-    res.sendFile(path.join(__dirname, '../loginAndForm/message.html'));
+    res.sendFile(path.join(__dirname, '../../public/loginAndForm/message.html'));
   },
 
   getAllPlans: async (req, res) => {
