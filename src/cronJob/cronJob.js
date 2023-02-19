@@ -35,7 +35,7 @@ const startCronJob = () => {
         subscriptions = subscriptionsResult.data;
       })
       .catch(err => {
-        logger.error(`error in request in cron.schedule: ${err}`);
+        logger.error(`error in request in cron.schedule: ${err.message}`);
       });
     if (subscriptions) {
       subscriptions.forEach(subscription => {
