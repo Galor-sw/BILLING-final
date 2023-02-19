@@ -26,7 +26,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon index.js",
     "start": "node index.js",
-    "cron": "node cronJob/cronJob.js"
+    "cron": "node src/cronJob/cronJob.js"
   },
   "devDependencies": {
     "eslint": "^8.31.0",

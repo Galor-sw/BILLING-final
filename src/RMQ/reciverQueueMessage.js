@@ -10,7 +10,6 @@ const moment = require('moment/moment');
 const logger = serverLogger.log;
 const format = 'YYYY-MM-DD HH:mm:ss';
 const listenQueue = () => {
-  logger.info('listening to IAM queues');
   amqp.connect(IAMMessageCreateFreePlan, (err, conn) => {
     conn.createChannel((err, ch) => {
       const q = 'CloudAMQP';
@@ -62,6 +61,8 @@ const listenQueue = () => {
       }, { noAck: true });
     });
   });
+
+  logger.info('listening to IAM queues');
 };
 
 module.exports = listenQueue;
