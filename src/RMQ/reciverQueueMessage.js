@@ -51,12 +51,12 @@ const listenQueue = () => {
       const q = 'CloudAMQP';
       ch.consume(q, (msg) => {
         const jsonMessage = (JSON.parse(msg.content.toString()));
-        axios.put(`${URL}/subscription/status`, jsonMessage)
+        axios.put(`${URL}/subscription`, jsonMessage)
           .then(() => {
             logger.info(`message from IAM - ${jsonMessage.accountId} account: ${jsonMessage.status}`);
           })
           .catch(err => {
-            logger.error(`error in request in cron.schedule: ${err.message}`);
+            logger.error(`error while requesting for edit subscription from RMQ: ${err.message}`);
           });
       }, { noAck: true });
     });
