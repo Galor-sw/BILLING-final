@@ -15,7 +15,10 @@ module.exports = (() => {
       const endpointSecret = process.env.END_POINT_STRIPE;
       const sig = req.headers['stripe-signature'];
       let event;
-      let session = '';
+      const checkoutCompleted = 'checkout.session.completed';
+      const invoiceSucceeded = 'invoice.payment_succeeded';
+      const invoiceFailed = 'invoice.payment_failed';
+      const customerDeleted = 'customer.subscription.deleted';
       try {
         event = await stripe.webhooks.constructEvent(req.body, sig, endpointSecret);
       } catch (err) {
@@ -24,117 +27,121 @@ module.exports = (() => {
       }
 
       switch (event.type) {
-        case 'checkout.session.completed':
+        case checkoutCompleted:
           if (!invoiceMap[event.data.object.invoice]) {
             invoiceMap[event.data.object.invoice] = event.data.object.metadata.account;
           }
           break;
-        case 'invoice.payment_succeeded':
-          session = event.data.object;
-          const id = invoiceMap[session.id];
-          delete invoiceMap[session.id];
-          const end = moment.utc(session.lines.data[0].period.end * 1000).toString();
-          const start = moment.utc(session.lines.data[0].period.start * 1000).toString();
-          try {
-            const subscription = await subsRepo.getSubscriptionByClientID(id);
-            const plan = await plansRepo.getPlanByStripeId(session.lines.data[0].plan.product);
-            const jsonObj = {
-              accountId: id,
-              plan: plan._id.toString(),
-              start_date: start,
-              next_date: end,
-              payment: session.lines.data[0].plan.interval,
-              renewal: end,
-              status: 'active',
-              customerId: session.customer,
-              stripeSubId: session.subscription
-            };
-            sendSubscriptionToIAM(id, plan.credits, plan.seats, plan.features);
-            logger.info(`${id}'s details sent to IAM team.`);
-            await subsRepo.editSubscription(subscription._id.toString(), jsonObj);
-            logger.info(`${id} subscription was updated.`);
-          } catch (err) {
-            logger.error(`failed to Update the repository: ${err.message}`);
-            res.status(404).send(err.message);
-          }
-
-          const transporter = nodemailer.createTransport({
-            host: 'zohomail.com',
-            service: 'Zoho',
-            secureConnection: false,
-            auth: {
-              user: process.env.email,
-              pass: process.env.password
-            }
-          });
-
-          try {
-            await transporter.sendMail({
-              from: process.env.email,
-              to: session.customer_email,
-              subject: 'Thank you for your purchase',
-              text: 'Thank you for your purchase',
-              html: `Hello ${session.customer_name}, thanks for your purchase`
-            });
-          } catch (err) {
-            logger.error(`failed to send payment mail to client: ${err.message}`);
-          }
-
+        case invoiceSucceeded:
+          invoiceSucceededCase(event, invoiceMap);
           break;
-        case 'invoice.payment_failed':
-          session = event.data.object;
-          const endDate = moment.utc(session.lines.data[0].period.end * 1000).toString();
-          const startDate = moment.utc(session.lines.data[0].period.start * 1000).toString();
-          try {
-            const subscription = await subsRepo.getSubscriptionByCustomerID(session.customer);
-            const plan = await plansRepo.getPlanByStripeId(session.lines.data[0].price.product);
-            const jsonObj = {
-              accountId: subscription.accountId,
-              plan: plan._id.toString(),
-              start_date: startDate,
-              next_date: endDate,
-              renewal: endDate,
-              status: 'suspended',
-              customerId: session.customer,
-              stripeSubId: session.subscription
-            };
-            await subsRepo.editSubscription(subscription._id.toString(), jsonObj);
-            sendSuspendedAccountToIAM(subscription.accountId);
-            logger.info(`${subscription.accountId}'s details sent to IAM team.`);
-            logger.info(`${subscription.accountId} subscription was suspended.`);
-          } catch (err) {
-            logger.error(`failed to Update the repository: ${err.message}`);
-            res.status(404).send(err.message);
-          }
+        case invoiceFailed:
+          invoiceFailedCase(event);
           break;
-        case 'customer.subscription.deleted':
-          session = event.data.object;
-          const date = moment.utc(session.ended_at * 1000).toString();
-          const nextDate = new Date();
-          nextDate.setDate(nextDate.getDate() + 1);
-          try {
-            const subscription = await subsRepo.getSubscriptionByCustomerID(session.customer);
-            const plan = await plansRepo.getPlanByName('Free');
-            const jsonObj = {
-              plan: plan._id.toString(),
-              start_date: date,
-              next_date: nextDate,
-              renewal: date,
-              status: 'active',
-              customerId: session.customer,
-              stripeSubId: ''
-            };
-            await subsRepo.editSubscription(subscription._id.toString(), jsonObj);
-            logger.info(`${subscription.accountId} subscription was updated.`);
-            sendSubscriptionToIAM(subscription.accountId, plan.credits, plan.seats, plan.features);
-            logger.info(`${subscription.accountId}'s details sent to IAM team.`);
-          } catch (err) {
-            logger.error(`failed to Update the repository: ${err.message}`);
-            res.status(404).send(err.message);
-          }
+        case customerDeleted:
+          customerDeletedCase(event);
           break;
       }
       res.status(200).send();
     }
   });
 })();
+
+const invoiceSucceededCase = async (event, invoiceMap) => {
+  const session = event.data.object;
+  const id = invoiceMap[session.id];
+  delete invoiceMap[session.id];
+  const end = utcToString(session.lines.data[0].period.end);
+  const start = utcToString(session.lines.data[0].period.start);
+  try {
+    const subscription = await subsRepo.getSubscriptionByClientID(id);
+    const plan = await plansRepo.getPlanByStripeId(session.lines.data[0].plan.product);
+    const newSub = subscriptionObject(id, plan._id.toString(), start, end, session, 'active');
+    notifyEditedSub(subscription, plan, newSub);
+    sendMail(session);
+  } catch (err) {
+    logger.error(`failed to Update the repository: ${err.message}`);
+  }
+};
+
+const invoiceFailedCase = async (event) => {
+  const session = event.data.object;
+  const endDate = utcToString(session.lines.data[0].period.end);
+  const startDate = utcToString(session.lines.data[0].period.start);
+  try {
+    const subscription = await subsRepo.getSubscriptionByCustomerID(session.customer);
+    const plan = await plansRepo.getPlanByStripeId(session.lines.data[0].price.product);
+    const newSub = subscriptionObject(subscription.accountId, plan._id.toString(), startDate, endDate, session, 'suspended');
+    await subsRepo.editSubscription(subscription._id.toString(), newSub);
+    sendSuspendedAccountToIAM(subscription.accountId);
+    logger.info(`${subscription.accountId}'s details sent to IAM team.`);
+    logger.info(`${subscription.accountId} subscription was suspended.`);
+  } catch (err) {
+    logger.error(`failed to Update the repository: ${err.message}`);
+  }
+};
+
+const customerDeletedCase = async (event) => {
+  const session = event.data.object;
+  const date = utcToString(session.ended_at);
+  const nextDate = new Date();
+  nextDate.setDate(nextDate.getDate() + 1);
+  try {
+    const subscription = await subsRepo.getSubscriptionByCustomerID(session.customer);
+    const plan = await plansRepo.getPlanByName('Free');
+    const newSub = subscriptionObject(subscription.accountId, plan._id.toString(), date, nextDate, session, 'active');
+    notifyEditedSub(subscription, plan, newSub);
+  } catch (err) {
+    logger.error(`failed to Update the repository: ${err.message}`);
+  }
+};
+
+const utcToString = (date) => {
+  return moment.utc(date * 1000).toString();
+};
+
+const subscriptionObject = (id, planId, start, end, session, status) => {
+  const object = {
+    accountId: id,
+    plan: planId,
+    start_date: start,
+    next_date: end,
+    payment: session.lines.data[0].plan.interval,
+    renewal: end,
+    status,
+    customerId: session.customer,
+    stripeSubId: session.subscription
+  };
+  return object;
+};
+
+const sendMail = (session) => {
+  const transporter = nodemailer.createTransport({
+    host: 'zohomail.com',
+    service: 'Zoho',
+    secureConnection: false,
+    auth: {
+      user: process.env.email,
+      pass: process.env.password
+    }
+  });
+
+  try {
+    transporter.sendMail({
+      from: process.env.email,
+      to: session.customer_email,
+      subject: 'Thank you for your purchase',
+      text: 'Thank you for your purchase',
+      html: `Hello ${session.customer_name}, thanks for your purchase`
+    });
+  } catch (err) {
+    logger.error(`failed to send payment mail to client: ${err.message}`);
+  }
+};
+
+const notifyEditedSub = (subscription, plan, editedSub) => {
+  subsRepo.editSubscription(subscription._id.toString(), editedSub);
+  logger.info(`${subscription.accountId} subscription was updated.`);
+  sendSubscriptionToIAM(subscription.accountId, plan.credits, plan.seats, plan.features);
+  logger.info(`${subscription.accountId}'s details sent to IAM team.`);
+};
