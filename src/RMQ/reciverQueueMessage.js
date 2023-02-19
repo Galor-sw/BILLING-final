@@ -51,9 +51,9 @@ const listenQueue = () => {
       const q = 'CloudAMQP';
       ch.consume(q, (msg) => {
         const jsonMessage = (JSON.parse(msg.content.toString()));
-        axios.put(`${URL}/subscription`, jsonMessage)
+        axios.put(`${URL}/subscription/${jsonMessage.accountId}`, jsonMessage.subscription)
           .then(() => {
-            logger.info(`message from IAM - ${jsonMessage.accountId} account: ${jsonMessage.status}`);
+            logger.info(`message from IAM - ${jsonMessage.accountId} status is: ${jsonMessage.subscription.status}`);
           })
           .catch(err => {
             logger.error(`error while requesting for edit subscription from RMQ: ${err.message}`);
