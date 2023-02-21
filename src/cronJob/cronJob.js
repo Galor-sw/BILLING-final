@@ -25,27 +25,34 @@ const updateSubscription = (subscription) => {
   });
 };
 
-const startCronJob = () => {
+const getFreeSubscriptions = () => {
   let subscriptions;
+  axios.get(`${URL}/subscription/Free`)
+    .then(subscriptionsResult => {
+      subscriptions = subscriptionsResult.data;
+      return subscriptions;
+    })
+    .catch(err => {
+      logger.error(`error in request in cron.schedule: ${err.message}`);
+    });
+};
+const UpdateAllFreeSubscriptions = (freeSubscriptions) => {
   const format = 'YYYY-MM-DD';
+  if (freeSubscriptions) {
+    freeSubscriptions.forEach(subscription => {
+      const nextDate = moment(subscription.next_date).format(format);
+      const today = moment().format(format);
+      if (nextDate === today) {
+        updateSubscription(subscription);
+      }
+    });
+  }
+};
+
+const startCronJob = () => {
+  const freeSubscriptions = getFreeSubscriptions();
   cron.schedule('00 04 * * *', () => {
-    // get all free subscriptions
-    axios.get(`${URL}/subscription/Free`)
-      .then(subscriptionsResult => {
-        subscriptions = subscriptionsResult.data;
-      })
-      .catch(err => {
-        logger.error(`error in request in cron.schedule: ${err.message}`);
-      });
-    if (subscriptions) {
-      subscriptions.forEach(subscription => {
-        const nextDate = moment(subscription.next_date).format(format);
-        const today = moment().format(format);
-        if (nextDate === today) {
-          updateSubscription(subscription);
-        }
-      });
-    }
+    UpdateAllFreeSubscriptions(freeSubscriptions);
   }
   , {
     scheduled: true,
