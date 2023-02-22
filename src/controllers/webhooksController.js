@@ -139,9 +139,13 @@ const sendMail = (session) => {
   }
 };
 
-const notifyEditedSub = (subscription, plan, editedSub) => {
-  subsRepo.editSubscription(subscription._id.toString(), editedSub);
-  logger.info(`${subscription.accountId} subscription was updated.`);
-  sendSubscriptionToIAM(subscription.accountId, plan.credits, plan.seats, plan.features);
-  logger.info(`${subscription.accountId}'s details sent to IAM team.`);
+const notifyEditedSub = async (subscription, plan, editedSub) => {
+  try {
+    await subsRepo.editSubscription(subscription._id.toString(), editedSub);
+    logger.info(`${subscription.accountId} subscription was updated.`);
+    sendSubscriptionToIAM(subscription.accountId, plan.credits, plan.seats, plan.features);
+    logger.info(`${subscription.accountId}'s details sent to IAM team.`);
+  } catch (err) {
+    logger.error(`failed to edit subscription ${err.message}`);
+  }
 };
