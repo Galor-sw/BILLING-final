@@ -34,31 +34,38 @@ module.exports = {
     try {
       // get the chosen plan
       const plan = await plansRepo.getPlanByName(req.body.name);
-
       // get the right id's from the chosen interval
       const priceId = getStripeID(req.body.interval, plan);
       const account = req.params.id.toString();
-
+      const price = getPrice(req.body.interval, plan);
       if (plan.name == 'Free') {
         // canceling the payment at the period time
         const subscription = await subsRepo.getSubscriptionByClientID(req.body.accountId);
         session = await stripe.subscriptions.update(subscription.stripeSubId, { cancel_at_period_end: true });
         res.send(`${URL}/accounts/any/message`);
       } else {
-        // create a stripe session that's send the client to the stripe payment page
-        session = await stripe.checkout.sessions.create({
+        const checkoutSession = await stripe.checkout.sessions.create({
           success_url: `${URL}/accounts/any/message`,
           cancel_url: `${URL}/accounts/any/message`,
+          payment_method_types: ['card', 'us_bank_account'],
           line_items: [
             { price: priceId, quantity: req.body.quantity }
           ],
           mode: 'subscription',
           metadata: { account }
         });
-      }
 
-      const urlCheckOut = session.url;
-      res.send(urlCheckOut);
+        const paymentIntent = await stripe.paymentIntents.create({
+          payment_method_types: ['card', 'us_bank_account'],
+          amount: price,
+          currency: 'usd',
+          metadata: { account }
+        });
+
+        checkoutSession.payment_intent = paymentIntent.client_secret;
+        const urlCheckOut = checkoutSession.url;
+        res.send(urlCheckOut);
+      }
     } catch (err) {
       logger.error(`failed to make a purchase: ${err.message}`);
     }
@@ -85,4 +92,18 @@ const getStripeID = (interval, plan) => {
   }
 
   return priceId;
+};
+
+const getPrice = (interval, plan) => {
+  let price;
+
+  if (interval == 'month') {
+    price = plan.prices.toObject().month.amount;
+  } else if (interval == 'year') {
+    price = plan.prices.toObject().year.amount;
+  } else {
+    throw new Error('Interval dont match the options');
+  }
+
+  return price;
 };

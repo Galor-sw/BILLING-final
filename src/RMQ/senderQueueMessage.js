@@ -4,14 +4,14 @@ const sendSuspendedDetailsToIAM = process.env.AMQP_SEND_SUSPENDED_ACCOUNT_TO_IAM
 const serverLogger = require('../logger');
 const logger = serverLogger.log;
 
-const sendSubscriptionToIAM = (accountId, credits, seats, featuers) => {
+const sendSubscriptionToIAM = (accountId, credits, seats, features) => {
   amqp.connect(sendSubscriptionDetailsToIAM, (err, conn) => {
     conn.createChannel(async (err, ch) => {
       const q = 'CloudAMQP';
       const subscriptionDetails = {
         accountId,
         seats,
-        features: featuers,
+        features,
         credits
       };
       const stringMsg = JSON.stringify(subscriptionDetails);
