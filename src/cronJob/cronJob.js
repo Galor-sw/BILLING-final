@@ -1,28 +1,24 @@
 const cron = require('node-cron');
 const moment = require('moment');
 const URL = process.env.URL;
-const { Subscription } = require('../models/subscriptions');
 const serverLogger = require('../logger');
 const { sendSubscriptionToIAM } = require('../RMQ/senderQueueMessage');
+const subsRepo = require('../repositories/subscriptionRepo');
 
 const axios = require('axios').default;
 
 const logger = serverLogger.log;
 
-const updateSubscription = (subscription) => {
+const updateSubscription = async (subscription) => {
   const nextMonth = moment().add(1, 'M').format('YYYY-MM-DD HH:mm:ss');
-  let updatedSubscription = new Subscription();
-  updatedSubscription = subscription;
-  updatedSubscription.next_date = nextMonth;
-
-  Subscription.findByIdAndUpdate(subscription._id, updatedSubscription, { new: true }, (err) => {
-    if (err) {
-      logger.error(`findByIdAndUpdate failed: ${err} to user email: ${subscription.email}`);
-    } else {
-      logger.info(`Next date subscription updated successfully to user email: ${subscription.email}`);
-      sendSubscriptionToIAM(subscription.accountId, subscription.plan.credits, subscription.plan.seats, subscription.plan.features);
-    }
-  });
+  subscription.next_date = nextMonth;
+  try {
+    await subsRepo.editSubscription(subscription._id, subscription);
+    logger.info(`Next date subscription updated successfully to user email: ${subscription.email}`);
+    sendSubscriptionToIAM(subscription.accountId, subscription.plan.credits, subscription.plan.seats, subscription.plan.features);
+  } catch (err) {
+    logger.error(`findByIdAndUpdate failed: ${err.message} to user email: ${subscription.email}`);
+  }
 };
 
 const getFreeSubscriptions = () => {
@@ -50,9 +46,12 @@ const UpdateAllFreeSubscriptions = (freeSubscriptions) => {
 };
 
 const startCronJob = () => {
-  const freeSubscriptions = getFreeSubscriptions();
   cron.schedule('00 04 * * *', () => {
-    UpdateAllFreeSubscriptions(freeSubscriptions);
+    const freeSubscriptions = getFreeSubscriptions();
+    logger.info('cron job start');
+    UpdateAllFreeSubscriptions(freeSubscriptions).then(() => {
+      return 'complete update subscription';
+    });
   }
   , {
     scheduled: true,

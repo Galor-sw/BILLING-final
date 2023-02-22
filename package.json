@@ -25,6 +25,7 @@
     "nodemon": "^2.0.20",
     "request": "^2.88.2",
     "save-dev": "^0.0.1-security",
+    "sinon": "^15.0.1",
     "stripe": "^11.3.0",
     "winston": "^3.8.2"
   },
