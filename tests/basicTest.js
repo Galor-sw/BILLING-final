@@ -1,12 +1,9 @@
-let chai = require('chai');
-let chaiHttp = require('chai-http');
+const chai = require('chai');
+const chaiHttp = require('chai-http');
 const { initServer } = require('../index');
 const assert = require('assert');
 chai.should();
 chai.use(chaiHttp);
-
-
-
 
 describe('Task API', () => {
     before(async () => {
@@ -23,7 +20,7 @@ describe('Task API', () => {
                     assert.strictEqual(typeof response.body.plans, 'object');
                     assert.strictEqual(response.body.clientPlan.name, 'Pro');
                     assert.strictEqual(response.body.clientPlan.type, 'year');
-                done();
+                    done();
                 });
         });
     });
@@ -31,9 +28,9 @@ describe('Task API', () => {
     describe('POST /accounts/:id/plans', () => {
         it('Should provide url link to stripe', (done) => {
             const price = {
-                "name":"Pro",
-                "interval":"year",
-                "quantity": 1
+                name: 'Pro',
+                interval: 'year',
+                quantity: 1
             };
             chai.request(process.env.URL)
                 .post('/accounts/63af758d7d6c80ed3dabdd6a/plans')
@@ -43,11 +40,10 @@ describe('Task API', () => {
                     assert.strictEqual(response.status, 200);
                     assert.strictEqual(typeof response.text, 'string');
                     assert.ok(response.text.includes('https://checkout.stripe.com'), 'Response text does not include Stripe URL');
-                done();
+                    done();
                 });
         });
     });
-
 
     describe('GET /:id/plans/:plan', () => {
         it('Should get plan by name', (done) => {
@@ -83,15 +79,14 @@ describe('Task API', () => {
 
     describe('POST /subscription', () => {
         it('Should provide url link to stripe', (done) => {
-
             const subscription = {
-                "accountId": "id example" + Math.random(),
-                "plan": "freePlan._id",
-                "start_date": "2023-01-07T17:44:17.000+00:00",
-                "payment": "month",
-                "next_date": "2023-02-07T17:44:17.000+00:00",
-                "renewal": "2024-01-07T17:44:17.000+00:00",
-                "status": "active"
+                accountId: 'id example' + Math.random(),
+                plan: 'freePlan._id',
+                start_date: '2023-01-07T17:44:17.000+00:00',
+                payment: 'month',
+                next_date: '2023-02-07T17:44:17.000+00:00',
+                renewal: '2024-01-07T17:44:17.000+00:00',
+                status: 'active'
             };
             chai.request(process.env.URL)
                 .post('/subscription')
@@ -102,5 +97,4 @@ describe('Task API', () => {
                 });
         });
     });
-
 });
