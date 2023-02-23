@@ -1,6 +1,6 @@
 require('dotenv').config({ path: '.env' });
 
-const Server = require('./src/Server');
+const Server = require('./src/server');
 const startCronJob = require('./src/cronJob/cronJob');
 const listenQueue = require('./src/RMQ/reciverQueueMessage');
 const connectDb = require('./src/mongoConnection');
@@ -17,8 +17,6 @@ const initServer = async () => {
 };
 if (process.env.NODE_ENV !== 'test') {
   initServer();
+} else {
+  module.exports = { initServer };
 }
-else{
-  module.exports = {initServer};
-}
-
