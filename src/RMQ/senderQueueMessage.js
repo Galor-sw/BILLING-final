@@ -1,8 +1,8 @@
 const amqp = require('amqplib/callback_api');
 const sendSubscriptionDetailsToIAM = process.env.AMQP_SEND_PLAN_TO_IAM_URL;
 const sendSuspendedDetailsToIAM = process.env.AMQP_SEND_SUSPENDED_ACCOUNT_TO_IAM_URL;
-const serverLogger = require('../logger');
-const logger = serverLogger.log;
+const Logger = require('abtest-logger');
+const logger = new Logger(process.env.CORE_QUEUE);
 
 const sendSubscriptionToIAM = (accountId, credits, seats, featuers) => {
   amqp.connect(sendSubscriptionDetailsToIAM, (err, conn) => {

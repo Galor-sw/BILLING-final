@@ -4,9 +4,9 @@ const nodemailer = require('nodemailer');
 const moment = require('moment');
 const plansRepo = require('../repositories/plansRepo');
 const subsRepo = require('../repositories/subscriptionRepo');
-const serverLogger = require('../logger');
+const Logger = require('abtest-logger');
+const logger = new Logger(process.env.CORE_QUEUE);
 const { sendSubscriptionToIAM, sendSuspendedAccountToIAM } = require('../RMQ/senderQueueMessage');
-const logger = serverLogger.log;
 
 module.exports = (() => {
   const invoiceMap = {};

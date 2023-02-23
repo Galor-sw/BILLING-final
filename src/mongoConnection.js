@@ -1,7 +1,6 @@
 const mongoose = require('mongoose');
-const serverLogger = require('./logger');
-
-const logger = serverLogger.log;
+const Logger = require('abtest-logger');
+const logger = new Logger(process.env.CORE_QUEUE);
 const options = {
   useNewUrlParser: true, // For deprecation warnings
   useUnifiedTopology: true // For deprecation warnings

@@ -1,7 +1,7 @@
 const { getUnixTime, endOfMonth } = require('date-fns');
 const staticRepo = require('../repositories/statisticRepo');
-const serverLogger = require('../logger');
-const logger = serverLogger.log;
+const Logger = require('abtest-logger');
+const logger = new Logger(process.env.CORE_QUEUE);
 
 module.exports = {
   getDRR: async (req, res) => {

@@ -1,7 +1,7 @@
 const subsRepo = require('../repositories/subscriptionRepo');
 const plansRepo = require('../repositories/plansRepo');
-const serverLogger = require('../logger');
-const logger = serverLogger.log;
+const Logger = require('abtest-logger');
+const logger = new Logger(process.env.CORE_QUEUE);
 
 module.exports = {
   getAllSubscriptions: async (req, res) => {
