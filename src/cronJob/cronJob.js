@@ -7,6 +7,7 @@ const logger = new Logger(process.env.CORE_QUEUE);
 
 const { sendSubscriptionToIAM } = require('../RMQ/senderQueueMessage');
 const subsRepo = require('../repositories/subscriptionRepo');
+const plansRepo = require("../repositories/plansRepo");
 const axios = require('axios').default;
 
 const updateSubscription = async (subscription) => {
@@ -21,16 +22,14 @@ const updateSubscription = async (subscription) => {
   }
 };
 
-const getFreeSubscriptions = () => {
-  let subscriptions;
-  axios.get(`${URL}/subscription/Free`)
-    .then(subscriptionsResult => {
-      subscriptions = subscriptionsResult.data;
-      return subscriptions;
-    })
-    .catch(err => {
-      logger.error(`error in request in cron.schedule: ${err.message}`);
-    });
+const getFreeSubscriptions = async () => {
+  try {
+    const freePlan = await plansRepo.getPlanByName('Free');
+    return await subsRepo.getAllSubscriptionsByPlanID(freePlan);
+  } catch (err) {
+    await logger.error(`failed to get all free subscriptions by name`);
+  }
+
 };
 const UpdateAllFreeSubscriptions = (freeSubscriptions) => {
   const format = 'YYYY-MM-DD';
