@@ -7,6 +7,7 @@ const logger = new Logger(process.env.CORE_QUEUE);
 const getStatisticsByRange = async (startRangeTimestamp, endRangeTimestamp) => {
   if (endRangeTimestamp > startRangeTimestamp) {
     const paymentIntentsInCents = await stripeRepo.getPaymentIntentsInCents(startRangeTimestamp, endRangeTimestamp);
+
     // paymentIntents returned by Stripe API are in cents, so we divide by 100
     const paymentIntents = paymentIntentsInCents.data
       .filter((paymentIntent) => paymentIntent.status === 'succeeded')
@@ -14,11 +15,9 @@ const getStatisticsByRange = async (startRangeTimestamp, endRangeTimestamp) => {
         return paymentIntent.amount / 100;
       });
 
-    const amountTotal = paymentIntents.reduce((a, b) => a + b);
-    return amountTotal;
+    return paymentIntents.reduce((a, b) => a + b);
   } else {
     throw new Error('bad range times');
-    logger.error('bad range times');
   }
 };
 
@@ -72,7 +71,7 @@ module.exports = {
       const amountTotal = await getStatisticsByRange(start, end);
       await res.send(amountTotal.toString());
     } catch (err) {
-      logger.error(`failed to fetch ARR: ${err.message}`);
+      logger.error(`failed to fetch Ranged stats: ${err.message}`);
       res.status(404).send(err.message);
     }
   }

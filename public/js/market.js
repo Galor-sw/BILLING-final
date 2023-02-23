@@ -61,8 +61,7 @@ $.get(`${urlEndPoint}/accounts/${userId}/plans`)
       $.post(`${urlEndPoint}/accounts/${userId}/plans`, {
         name: e.target.name,
         interval: e.target.value,
-        quantity: 1,
-        accountId: userId
+        quantity: 1
       })
         .done((link) => {
           window.location.replace(link);

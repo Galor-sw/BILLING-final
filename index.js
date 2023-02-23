@@ -4,7 +4,6 @@ const Server = require('./src/Server');
 const startCronJob = require('./src/cronJob/cronJob');
 const listenQueue = require('./src/RMQ/reciverQueueMessage');
 const connectDb = require('./src/mongoConnection');
-
 const initServer = async () => {
   try {
     await connectDb();
@@ -15,10 +14,9 @@ const initServer = async () => {
 
   }
 };
-if (process.env.NODE_ENV !== 'test') {
+
+if (process.env.NODE_ENV === 'test') {
+  module.exports = { initServer };
+} else {
   initServer();
 }
-else{
-  module.exports = {initServer};
-}
-
