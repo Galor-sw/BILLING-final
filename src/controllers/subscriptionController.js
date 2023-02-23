@@ -1,5 +1,4 @@
 const subsRepo = require('../repositories/subscriptionRepo');
-const plansRepo = require('../repositories/plansRepo');
 const Logger = require('abtest-logger');
 const logger = new Logger(process.env.CORE_QUEUE);
 
@@ -26,18 +25,6 @@ module.exports = {
     res.status(200).send(newSub);
   },
 
-  getAllSubscriptionsByPlanName: async (req, res) => {
-    let result;
-    try {
-      const plan = await plansRepo.getPlanByName(req.params.planName);
-      result = await subsRepo.getAllSubscriptionsByPlanID(plan);
-    } catch (err) {
-      logger.error(`failed to get all subscriptions by name: ${err.message}`);
-      res.status(404).send(err.message);
-    }
-    res.status(200).send(result);
-  },
-
   editSubscription: async (req, res) => {
     try {
       await subsRepo.editSubscriptionByAccountId(req.params.accountId, req.body);
@@ -46,15 +33,6 @@ module.exports = {
       res.status(404).send(err.message);
     }
     res.status(200).send(true);
-  },
-
-  changeSubscriptionStatus: async (req, res) => {
-    try {
-      await subsRepo.changeSubscriptionStatus(req.body);
-    } catch (err) {
-      logger.error(`failed to change status: ${err.message}`);
-      res.status(404).send(err.message);
-    }
-    res.status(200).send(true);
   }
+
 };
