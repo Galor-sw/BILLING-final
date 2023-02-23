@@ -1,8 +1,7 @@
 const path = require('path');
 const express = require('express');
-const serverLogger = require('./logger');
 const cors = require('cors');
-
+const Logger = require('abtest-logger');
 // Routers
 const plansRouter = require('./routers/planRouter');
 const webhooksRouter = require('./routers/webhooksRouter');
@@ -12,7 +11,7 @@ const statisticRouter = require('./routers/statisticRouter');
 module.exports = class server {
   constructor () {
     this.app = express();
-    this.logger = serverLogger.log;
+    this.logger = new Logger(process.env.CORE_QUEUE);
     this.setup();
   }
 

@@ -1,7 +1,8 @@
 const { getUnixTime, endOfMonth } = require('date-fns');
 const stripeRepo = require('../repositories/stripeRepo');
-const serverLogger = require('../logger');
-const logger = serverLogger.log;
+const Logger = require('abtest-logger');
+
+const logger = new Logger(process.env.CORE_QUEUE);
 
 const getStatisticsByRange = async (startRangeTimestamp, endRangeTimestamp) => {
   if (endRangeTimestamp > startRangeTimestamp) {
