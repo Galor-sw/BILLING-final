@@ -4,10 +4,9 @@ const URL = process.env.URL;
 const stripeSecretKey = process.env.STRIPE_SECRET_KEY;
 const stripe = require('stripe')(stripeSecretKey);
 
-const serverLogger = require('../logger');
 const path = require('path');
-const logger = serverLogger.log;
-
+const Logger = require('abtest-logger');
+const logger = new Logger(process.env.CORE_QUEUE);
 module.exports = {
   sendHtmlFile: (req, res) => {
     res.sendFile(path.join(__dirname, '../../public/loginAndForm/market.html'));

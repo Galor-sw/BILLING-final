@@ -1,8 +1,10 @@
 const cron = require('node-cron');
 const moment = require('moment');
 const URL = process.env.URL;
-const serverLogger = require('../logger');
-const logger = serverLogger.log;
+
+const Logger = require('abtest-logger');
+const logger = new Logger(process.env.CORE_QUEUE);
+
 const { sendSubscriptionToIAM } = require('../RMQ/senderQueueMessage');
 const subsRepo = require('../repositories/subscriptionRepo');
 const axios = require('axios').default;

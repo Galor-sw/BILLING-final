@@ -1,13 +1,12 @@
 const amqp = require('amqplib/callback_api');
 const IAMMessageCreateFreePlan = process.env.GET_MESSAGE_FROM_IAM_CREATE_FREE_PLAN;
 const IAMMessageStatusAccount = process.env.GET_MESSAGE_FROM_IAM_ACCOUNT_STATUS_CHANGED;
-const serverLogger = require('../logger');
 const URL = process.env.URL;
 const { sendSubscriptionToIAM } = require('./senderQueueMessage');
 const { default: axios } = require('axios');
 const moment = require('moment/moment');
-
-const logger = serverLogger.log;
+const Logger = require('abtest-logger');
+const logger = new Logger(process.env.CORE_QUEUE);
 const format = 'YYYY-MM-DD HH:mm:ss';
 const listenQueue = () => {
   amqp.connect(IAMMessageCreateFreePlan, (err, conn) => {
