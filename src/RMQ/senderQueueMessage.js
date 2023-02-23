@@ -15,9 +15,13 @@ const sendSubscriptionToIAM = (accountId, credits, seats, features) => {
         credits
       };
       const stringMsg = JSON.stringify(subscriptionDetails);
-      ch.assertQueue(q, { durable: false });
-      await ch.sendToQueue(q, Buffer.from(stringMsg));
-      logger.info(`message to IAM -> update plan to user: ${accountId}`);
+      try {
+        ch.assertQueue(q, { durable: false });
+        await ch.sendToQueue(q, Buffer.from(stringMsg));
+        await logger.info(`message to IAM -> update plan to user: ${accountId}`);
+      } catch (err) {
+        await logger.error('failed to send new plan to IAM');
+      }
     });
   });
 };
@@ -30,9 +34,13 @@ const sendSuspendedAccountToIAM = (accountId) => {
         accountId
       };
       const stringMsg = JSON.stringify(subscriptionDetails);
-      ch.assertQueue(q, { durable: false });
-      await ch.sendToQueue(q, Buffer.from(stringMsg));
-      logger.info(`message to IAM -> suspended account, user: ${accountId}`);
+      try {
+        ch.assertQueue(q, { durable: false });
+        await ch.sendToQueue(q, Buffer.from(stringMsg));
+        await logger.info(`message to IAM -> suspended account, user: ${accountId}`);
+      } catch (err) {
+        await logger.info('failed to send \'suspend account\' message to IAM ');
+      }
     });
   });
 };
