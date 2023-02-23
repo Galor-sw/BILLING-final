@@ -9,7 +9,7 @@ describe('Task API', () => {
   before(async () => {
     await initServer(); // Start the server before tests run
   });
-
+  
   describe('GET /accounts/:id/plans', () => {
     it('Should give all the plans', (done) => {
       chai.request(process.env.URL)
@@ -21,10 +21,11 @@ describe('Task API', () => {
           assert.strictEqual(response.body.clientPlan.name, 'Pro');
           assert.strictEqual(response.body.clientPlan.type, 'year');
           done();
+
         });
     });
   });
-
+  
   describe('POST /accounts/:id/plans', () => {
     it('Should provide url link to stripe', (done) => {
       const price = {
@@ -41,6 +42,7 @@ describe('Task API', () => {
           assert.strictEqual(typeof response.text, 'string');
           assert.ok(response.text.includes('https://checkout.stripe.com'), 'Response text does not include Stripe URL');
           done();
+
         });
     });
   });
@@ -59,6 +61,7 @@ describe('Task API', () => {
           assert.strictEqual(typeof response.body.features, 'object');
           assert.strictEqual(response.body.features.length, 3);
           done();
+
         });
     });
   });
@@ -98,3 +101,4 @@ describe('Task API', () => {
     });
   });
 });
+

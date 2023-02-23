@@ -15,5 +15,10 @@ const initServer = async () => {
 
   }
 };
+if (process.env.NODE_ENV !== 'test') {
+  initServer();
+}
+else{
+  module.exports = {initServer};
+}
 
-initServer();
