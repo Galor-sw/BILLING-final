@@ -1,8 +1,22 @@
 const { getUnixTime, endOfMonth } = require('date-fns');
 const stripeRepo = require('../repositories/stripeRepo');
 const Logger = require('abtest-logger');
+const axios = require("axios");
 
 const logger = new Logger(process.env.CORE_QUEUE);
+
+const countItems = async () => {
+  const response = await axios.get(process.env.URL+'/subscription');
+  const items = response.data;
+  const counts = {};
+  items.forEach(item => {
+    if(item.plan != null ){
+      const name = item.plan.name;
+      counts[name] = (counts[name] || 0) + 1;
+    }
+  });
+  return counts;
+}
 
 const getStatisticsByRange = async (startRangeTimestamp, endRangeTimestamp) => {
   if (endRangeTimestamp > startRangeTimestamp) {
@@ -14,11 +28,11 @@ const getStatisticsByRange = async (startRangeTimestamp, endRangeTimestamp) => {
         return paymentIntent.amount / 100;
       });
 
-    const amountTotal = paymentIntents.reduce((a, b) => a + b);
-    return amountTotal;
+    return paymentIntents.reduce((a, b) => a + b);
   } else {
+    await logger.error('bad range times');
     throw new Error('bad range times');
-    logger.error('bad range times');
+
   }
 };
 
@@ -34,7 +48,7 @@ module.exports = {
       const amountTotal = await getStatisticsByRange(start, end);
       await res.send(amountTotal.toString());
     } catch (err) {
-      logger.error(`failed to fetch DRR: ${err.message}`);
+      await logger.error(`failed to fetch DRR: ${err.message}`);
       res.status(404).send(err.message);
     }
   },
@@ -49,7 +63,7 @@ module.exports = {
       const amountTotal = await getStatisticsByRange(start, end);
       await res.send(amountTotal.toString());
     } catch (err) {
-      logger.error(`failed to fetch MRR: ${err.message}`);
+      await logger.error(`failed to fetch MRR: ${err.message}`);
       res.status(404).send(err.message);
     }
   },
@@ -61,7 +75,7 @@ module.exports = {
       const amountTotal = await getStatisticsByRange(start, end);
       await res.send(amountTotal.toString());
     } catch (err) {
-      logger.error(`failed to fetch ARR: ${err.message}`);
+      await logger.error(`failed to fetch ARR: ${err.message}`);
       res.status(404).send(err.message);
     }
   },
@@ -72,7 +86,19 @@ module.exports = {
       const amountTotal = await getStatisticsByRange(start, end);
       await res.send(amountTotal.toString());
     } catch (err) {
-      logger.error(`failed to fetch ARR: ${err.message}`);
+      await logger.error(`failed to fetch ARR by range of dates: ${err.message}`);
+      res.status(404).send(err.message);
+    }
+  },
+  getpopularPlan: async (req, res) => {
+    try {
+      const planCounts = await countItems ();
+      const maxPlanEntry = Object.entries(planCounts).reduce((acc, curr) => {
+        return curr[1] > acc[1] ? curr : acc;
+      });
+      const maxPlan = maxPlanEntry[0];
+      return(maxPlan);
+    } catch (err) {
       res.status(404).send(err.message);
     }
   }
