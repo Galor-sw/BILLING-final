@@ -21,6 +21,7 @@ const countItems = async () => {
 const getStatisticsByRange = async (startRangeTimestamp, endRangeTimestamp) => {
   if (endRangeTimestamp > startRangeTimestamp) {
     const paymentIntentsInCents = await stripeRepo.getPaymentIntentsInCents(startRangeTimestamp, endRangeTimestamp);
+
     // paymentIntents returned by Stripe API are in cents, so we divide by 100
     const paymentIntents = paymentIntentsInCents.data
       .filter((paymentIntent) => paymentIntent.status === 'succeeded')
@@ -32,7 +33,6 @@ const getStatisticsByRange = async (startRangeTimestamp, endRangeTimestamp) => {
   } else {
     await logger.error('bad range times');
     throw new Error('bad range times');
-
   }
 };
 
@@ -86,7 +86,7 @@ module.exports = {
       const amountTotal = await getStatisticsByRange(start, end);
       await res.send(amountTotal.toString());
     } catch (err) {
-      await logger.error(`failed to fetch ARR by range of dates: ${err.message}`);
+      await logger.error(`failed to fetch Ranged Recurring Revenue: ${err.message}`);
       res.status(404).send(err.message);
     }
   },
@@ -99,7 +99,8 @@ module.exports = {
       const maxPlan = maxPlanEntry[0];
       return(maxPlan);
     } catch (err) {
-      res.status(404).send(err.message);
+        await logger.error(`failed to fetch the popular item: ${err.message}`);
+        res.status(404).send(err.message);
     }
   }
 };

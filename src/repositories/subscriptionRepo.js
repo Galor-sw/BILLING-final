@@ -29,11 +29,5 @@ module.exports = {
 
   editSubscription: (id, sub) => {
     return Subscription.findByIdAndUpdate(id, sub, { new: true }).populate({ path: 'plan', model: 'plans' });
-  },
-
-  changeSubscriptionStatus: (updateSubscriptionDetails) => {
-    const filter = { accountId: updateSubscriptionDetails.accountId };
-    const update = { status: updateSubscriptionDetails.status };
-    return Subscription.findOneAndUpdate(filter, update, { new: true }).populate({ path: 'plan', model: 'plans' });
   }
 };
