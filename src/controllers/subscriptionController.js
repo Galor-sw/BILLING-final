@@ -14,6 +14,19 @@ module.exports = {
     res.status(200).send(subscriptions);
   },
 
+  getAccountSubDetails: async (req, res) => {
+    try {
+      const clientSub = await subsRepo.getSubscriptionByClientID(req.params.accountId);
+      res.json({
+        name: clientSub.plan.name,
+        type: clientSub.payment
+      });
+    } catch (err) {
+      await logger.error(`failed to fetch plans from DB error: ${err.message}`);
+      res.status(400).send('failed occurred on server');
+    }
+  },
+
   createSubscription: async (req, res) => {
     let newSub;
     try {

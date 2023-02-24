@@ -18,19 +18,6 @@ module.exports = {
     }
   },
 
-  getAccountPlanDetails: async (req, res) => {
-    try {
-      const clientSub = await subsRepo.getSubscriptionByClientID(req.params.accountId);
-      res.json({
-        name: clientSub.plan.name,
-        type: clientSub.payment
-      });
-    } catch (err) {
-      await logger.error(`failed to fetch plans from DB error: ${err.message}`);
-      res.status(400).send('failed occurred on server');
-    }
-  },
-
   purchasePlan: async (req, res) => {
     try {
       // get the chosen plan
@@ -73,7 +60,7 @@ module.exports = {
       res.status(200).send('???');
     } catch (err) {
       await logger.error(`failed to make a purchase: ${err.message}`);
-      res.status(400).send('failed occurred on server');
+      res.status(404).send('failed occurred on server');
     }
   }
 };

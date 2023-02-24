@@ -19,6 +19,4 @@ if (process.env.NODE_ENV === 'test') {
   module.exports = { initServer };
 } else {
   initServer();
-} else {
-  module.exports = { initServer };
 }

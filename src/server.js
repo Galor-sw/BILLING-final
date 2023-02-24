@@ -7,6 +7,7 @@ const plansRouter = require('./routers/planRouter');
 const webhooksRouter = require('./routers/webhooksRouter');
 const subscriptionRouter = require('./routers/subscriptionRouter');
 const statisticRouter = require('./routers/statisticRouter');
+const stripeRouter = require('./routers/stripeRouter');
 
 module.exports = class server {
     constructor() {
