@@ -8,6 +8,7 @@ const {sendSubscriptionToIAM} = require('../RMQ/senderQueueMessage');
 const subsRepo = require('../repositories/subscriptionRepo');
 const plansRepo = require("../repositories/plansRepo");
 
+
 const updateSubscription = async (subscription) => {
     const nextMonth = moment().add(1, 'M').format('YYYY-MM-DD HH:mm:ss');
     subscription.next_date = nextMonth;
@@ -21,13 +22,12 @@ const updateSubscription = async (subscription) => {
 };
 
 const getFreeSubscriptions = async () => {
-    try {
-        const freePlan = await plansRepo.getPlanByName('Free');
-        return await subsRepo.getAllSubscriptionsByPlanID(freePlan);
-    } catch (err) {
-        await logger.error(`failed to get all free subscriptions by name`);
-    }
-
+  try {
+    const freePlan = await plansRepo.getPlanByName('Free');
+    return await subsRepo.getAllSubscriptionsByPlanID(freePlan);
+  } catch (err) {
+    await logger.error(`failed to get all free subscriptions by name`);
+  }
 };
 const UpdateAllFreeSubscriptions = (freeSubscriptions) => {
     const format = 'YYYY-MM-DD';
