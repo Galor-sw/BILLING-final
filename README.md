@@ -29,7 +29,6 @@ The service will charge the client's user accordingly (and it will do a renewal 
 <img width="958" alt="image" src="https://user-images.githubusercontent.com/80041527/211154160-4932402f-302d-4a61-ac22-baff149fd4aa.png">
 
 <h3>Installation Guide</h3>
-TODO: add links and missing sections.
 <ol>
 <li>clone git repository:  </li>
 <li>add file: '.env' into config folder </li>
