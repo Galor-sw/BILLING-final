@@ -2,20 +2,36 @@ const stripeSecretKey = process.env.STRIPE_SECRET_KEY;
 const stripe = require('stripe')(stripeSecretKey);
 
 module.exports = {
-  getPaymentIntentsInCents: async (startRangeTimestamp, endRangeTimestamp) => {
-    const paymentIntents = await stripe.paymentIntents.list({
+  getPaymentIntentsInCents: (startRangeTimestamp, endRangeTimestamp) => {
+    return stripe.paymentIntents.list({
       created: { gte: startRangeTimestamp, lte: endRangeTimestamp },
       limit: 100 // Maximum limit (10 is default)
     });
-    return paymentIntents;
   },
 
-  createStripeIntent: (price, account) => {
+  createStripeIntent: (price, accountId) => {
     return stripe.paymentIntents.create({
       payment_method_types: ['card', 'us_bank_account'],
       amount: (price * 100),
       currency: 'usd',
-      metadata: { account }
+      metadata: { accountId }
+    });
+  },
+
+  cancelSubscription: (stripeSubId) => {
+    return stripe.subscriptions.update(stripeSubId, { cancel_at_period_end: true });
+  },
+
+  createStripeCheckOutSession: (accountId, priceId, quantity) => {
+    return stripe.checkout.sessions.create({
+      success_url: 'http://localhost:5000//accounts/any/message',
+      cancel_url: 'http://localhost:5000//accounts/any/message',
+      payment_method_types: ['card', 'us_bank_account'],
+      line_items: [
+        { price: priceId, quantity }
+      ],
+      mode: 'subscription',
+      metadata: { accountId }
     });
   }
 };
