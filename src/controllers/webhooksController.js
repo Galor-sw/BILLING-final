@@ -11,7 +11,7 @@ const { sendSubscriptionToIAM, sendSuspendedAccountToIAM } = require('../RMQ/sen
 module.exports = (() => {
   const invoiceMap = {};
   return ({
-    getEvent: async (req, res) => {
+    handleIncomingEvent: async (req, res) => {
       const endpointSecret = process.env.END_POINT_STRIPE;
       const sig = req.headers['stripe-signature'];
       let event;
@@ -60,7 +60,7 @@ const invoiceSucceededCase = async (event, invoiceMap) => {
     notifyEditedSub(subscription, plan, newSub);
     sendMail(session);
   } catch (err) {
-    logger.error(`failed to Update the repository: ${err.message}`);
+    await logger.error(`failed to Update the repository: ${err.message}`);
   }
 };
 
@@ -92,7 +92,7 @@ const customerDeletedCase = async (event) => {
     const newSub = subscriptionObject(subscription.accountId, plan._id.toString(), date, nextDate, session, 'active');
     notifyEditedSub(subscription, plan, newSub);
   } catch (err) {
-    logger.error(`failed to Update the repository: ${err.message}`);
+    await logger.error(`failed to Update the repository: ${err.message}`);
   }
 };
 
@@ -115,7 +115,7 @@ const subscriptionObject = (id, planId, start, end, session, status) => {
   return object;
 };
 
-const sendMail = (session) => {
+const sendMail = async (session) => {
   const transporter = nodemailer.createTransport({
     host: 'zohomail.com',
     service: 'Zoho',
@@ -127,25 +127,26 @@ const sendMail = (session) => {
   });
 
   try {
-    transporter.sendMail({
+    await transporter.sendMail({
       from: process.env.email,
       to: session.customer_email,
       subject: 'Thank you for your purchase',
       text: 'Thank you for your purchase',
       html: `Hello ${session.customer_name}, thanks for your purchase`
     });
+    await logger.info(`email sent to ${session.customer_email}`);
   } catch (err) {
-    logger.error(`failed to send payment mail to client: ${err.message}`);
+    await logger.error(`failed to send payment mail to client: ${err.message}`);
   }
 };
 
 const notifyEditedSub = async (subscription, plan, editedSub) => {
   try {
     await subsRepo.editSubscription(subscription._id.toString(), editedSub);
-    logger.info(`${subscription.accountId} subscription was updated.`);
-    sendSubscriptionToIAM(subscription.accountId, plan.credits, plan.seats, plan.features);
-    logger.info(`${subscription.accountId}'s details sent to IAM team.`);
+    await logger.info(`${subscription.accountId} subscription was updated.`);
+    await sendSubscriptionToIAM(subscription.accountId, plan.credits, plan.seats, plan.features);
+    await logger.info(`${subscription.accountId}'s details sent to IAM team.`);
   } catch (err) {
-    logger.error(`failed to edit subscription ${err.message}`);
+    await logger.error(`failed to edit subscription ${err.message}`);
   }
 };

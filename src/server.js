@@ -1,52 +1,62 @@
-const path = require('path');
 const express = require('express');
 const cors = require('cors');
 const Logger = require('abtest-logger');
+
 // Routers
 const plansRouter = require('./routers/planRouter');
 const webhooksRouter = require('./routers/webhooksRouter');
 const subscriptionRouter = require('./routers/subscriptionRouter');
 const statisticRouter = require('./routers/statisticRouter');
+const stripeRouter = require('./routers/stripeRouter');
 
 module.exports = class server {
-  constructor () {
-    this.app = express();
-    this.logger = new Logger(process.env.CORE_QUEUE);
-    this.setup();
-  }
+    constructor() {
+        this.app = express();
+        this.logger = new Logger(process.env.CORE_QUEUE);
+        this.setup();
+        this.handleErrors();
+    }
 
-  setup () {
-    this.setHeaders();
-    this.setRouters();
-  }
+    setup() {
+        this.setHeaders();
+        this.setRouters();
+    }
 
-  setHeaders () {
-    // this help us render web pages with react I think we won't use it.
-    this.app.set('view engine', 'ejs');
+    setHeaders() {
+        this.app.use(cors({origin: true}));
+        this.app.use(express.urlencoded({
+            extended: true
+        }));
+    }
 
-    this.app.use(cors({ origin: true }));
-    this.app.use(express.urlencoded({
-      extended: true
-    }));
-  }
+    setRouters() {
+        this.app.use('/plans', express.json(), plansRouter);
+        this.app.use('/subscriptions', express.json(), subscriptionRouter);
+        this.app.use('/statistics', express.json(), statisticRouter);
+        this.app.use('/webhook', express.raw({type: '*/*'}), webhooksRouter);
+    }
 
-  setRouters () {
-    this.app.use('/accounts', express.json(), plansRouter);
-    this.app.use('/subscription', express.json(), subscriptionRouter);
-    this.app.use('/webhook', express.raw({ type: '*/*' }), webhooksRouter);
-    this.app.use('/statistics', express.json(), statisticRouter);
+    handleErrors() {
+        // Handle invalid routes
+        this.app.use((req, res, next) => {
+            const error = new Error('Bad Request');
+            error.status = 404;
+            next(error);
+        });
 
-    // Temporary until we use React
-    this.app.use('/css', express.static(path.join(__dirname, '../public/css')));
-    this.app.use('/js', express.static(path.join(__dirname, '../public/js')));
-  }
+        // Handle errors
+        this.app.use((err, req, res, next) => {
+            res.status(err.status || 500);
+            res.send(`${err.status} : ${err.message}`);
+        });
+    }
 
-  listen () {
-    const port = process.env.PORT || 3000;
-    this.app.listen(port, () => this.logger.info(`Server is listening on port ${process.env.PORT}`));
-  }
+    listen() {
+        const port = process.env.PORT || 3000;
+        this.app.listen(port, () => this.logger.info(`Server is listening on port ${process.env.PORT}`));
+    }
 
-  async start () {
-    await this.listen();
-  }
+    async start() {
+        await this.listen();
+    }
 };

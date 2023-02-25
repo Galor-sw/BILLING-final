@@ -2,6 +2,9 @@
   "dependencies": {
     "@jest/globals": "^29.4.3",
     "abtest-logger": "^1.0.14",
+
+    "abtest-logger": "^1.0.20",
+
     "amqplib": "^0.10.3",
     "assert": "^2.0.0",
     "axios": "^1.2.2",
