@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "@jest/globals": "^29.4.3",
     "abtest-logger": "^1.0.21",
     "amqplib": "^0.10.3",
     "assert": "^2.0.0",
@@ -33,7 +34,7 @@
     "winston": "^3.8.2"
   },
   "scripts": {
-    "test": "mocha tests/*.js",
+    "test": "jest",
     "dev": "nodemon index.js",
     "start": "node index.js",
     "cron": "node src/cronJob/cronJob.js"

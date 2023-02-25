@@ -4,16 +4,17 @@ const { initServer } = require('../index');
 const assert = require('assert');
 chai.should();
 chai.use(chaiHttp);
+const { beforeAll } = require('@jest/globals');
 const id ='63af758d7d6c80ed3dabdd6a';
 const accountId = 'id example' + Math.random();
-// const year = '2023';
-// const month = '1';
-// const day = '10';
+const year = '2023';
+const month = '1';
+const day = '9';
 
 
 
 describe('Task API', () => {
-  before(async () => {
+    beforeAll(async () => {
   // Start the server before tests run
     await initServer();
   });
@@ -107,43 +108,39 @@ describe('Task API', () => {
         });
     });
 
-//TODO: those tests are not pass -> we need to check why.
-// Also i think we can remove the ARR, MRR, DRR functions bc getStatisticsByRange includes them.
 
-//     describe('GET /statistics/arr/:year', () => {
-//         it('Should give statistic by year', async() => {
-//             const response = await chai.request(process.env.URL).get('/statistics/arr/'+year);
-//                     assert.strictEqual(response.status, 200);
-//                     // assert.strictEqual(typeof response.body, 'object');
-//                 });
-//         });
-//
-//     describe('GET /statistics/mrr/:year/:month', () => {
-//         it('Should give statistic by year and month', async() => {
-//             const response = await chai.request(process.env.URL).get('/statistics/mrr/'+year+'/'+month );
-//             // console.log(response.body);
-//             assert.strictEqual(response.status, 200);
-//             // assert.strictEqual(typeof response.body, 'object');
-//         });
-//     });
-//
-//     describe('GET /statistics/drr/:year/:month/:day', () => {
-//         it('Should give statistic by year, month and day', async() => {
-//             const planName = 'Pro';
-//             const response = await chai.request(process.env.URL).get('/statistics/drr/'+year+'/'+month +'/' +day);
-//             // console.log(response.body);
-//             assert.strictEqual(response.status, 200);
-//             // assert.strictEqual(typeof response.body, 'object');
-//         });
-//     });
-//
-//     describe('GET /statistics/:start_date/:end_date', () => {
-//         it('Should give statistic by range of dates', async () => {
-//             const response = await chai.request(process.env.URL).get('/statistics/2022-02-02T23:59:59Z/2023-02-22T23:59:59Z');
-//             // console.log(response);
-//             assert.strictEqual(response.status, 200);
-//             // assert.strictEqual(typeof response.body, 'object');
-//         });
-//     });
+    describe('GET /statistics/arr/:year', () => {
+        it('Should give statistic by year', async() => {
+            const response = await chai.request(process.env.URL).get('/statistics/arr/'+year);
+                    assert.strictEqual(response.status, 200);
+                    // assert.strictEqual(typeof response.body, 'object');
+                });
+        });
+
+    describe('GET /statistics/mrr/:year/:month', () => {
+        it('Should give statistic by year and month', async() => {
+            const response = await chai.request(process.env.URL).get('/statistics/mrr/'+year+'/'+month );
+            // console.log(response.body);
+            assert.strictEqual(response.status, 200);
+            // assert.strictEqual(typeof response.body, 'object');
+        });
+    });
+// TODO: this test is not pass
+    // describe('GET /statistics/drr/:year/:month/:day', () => {
+    //     it('Should give statistic by year, month and day', async() => {
+    //         const response = await chai.request(process.env.URL).get('/statistics/drr/'+year+'/'+month+'/'+day);
+    //         assert.strictEqual(response.status, 200);
+    //         // assert.strictEqual(typeof response.body, 'object');
+    //     });
+    // });
+
+    describe('GET /statistics/:start_date/:end_date', () => {
+        it('Should give statistic by range of dates', async () => {
+            const response = await chai.request(process.env.URL).get('/statistics/2022-02-02T23:59:59Z/2023-02-22T23:59:59Z');
+            // console.log(response);
+            assert.strictEqual(response.status, 200);
+            // assert.strictEqual(typeof response.body, 'object');
+        });
+    });
 });
 
