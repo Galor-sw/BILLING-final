@@ -1,10 +1,11 @@
 const plansRepo = require('../repositories/plansRepo');
 const stripeRepo = require('../repositories/stripeRepo');
 const subsRepo = require('../repositories/subscriptionRepo');
-
+const axios = require('axios');
 const Logger = require('abtest-logger');
 const logger = new Logger(process.env.CORE_QUEUE);
-
+const stripeSecretKey = process.env.STRIPE_SECRET_KEY;
+const stripe = require('stripe')(stripeSecretKey);
 module.exports = {
 
   sendPublishableKey: (req, res) => {
@@ -22,7 +23,8 @@ module.exports = {
       const priceId = getStripeID(req.body.interval, plan);
       const price = getPrice(req.body.interval, plan);
       const accountId = req.params.accountId;
-
+      const customer = createCustomer(accountId);
+      const subsription = createSubsription(customer);
       if (plan.name === 'Free') {
         // canceling the payment at the period time
         const subscription = await subsRepo.getSubscriptionByClientID(accountId);
@@ -69,4 +71,42 @@ const getPrice = (interval, plan) => {
   }
 
   return price;
+};
+
+const createCustomer = async (accountId) => {
+  let customer;
+  const client = subsRepo.getSubscriptionByCustomerID(accountId);
+  customer = await stripe.customer.retrieve(client.customerId);
+  if (!customer) {
+    const accountDetails = await axios.get('https://abtest-shenkar.onrender.com/accounts/' + accountId);
+    customer = await stripe.customers.create({
+      email: accountDetails.mail,
+      name: accountDetails.name
+    });
+  }
+  return customer;
+};
+
+const createSubsription = async (customer) => {
+  let subscription;
+  subscription = await stripe.subscriptions.retrieve(customer.subscriptionId);
+  if (!subscription) {
+    subscription = await stripe.subscriptions.create({
+      customer: customerId,
+      items: [{
+        price: priceId
+      }],
+      payment_behavior: 'default_incomplete',
+      payment_settings: { save_default_payment_method: 'on_subscription' },
+      expand: ['latest_invoice.payment_intent']
+    });
+  }
+  return subscription;
+  //   res.send({
+  //     subscriptionId: subscription.id,
+  //     clientSecret: subscription.latest_invoice.payment_intent.client_secret
+  //   });
+  // } catch (error) {
+  //   return res.status(404).send({ error: { message: error.message } });
+  // }
 };
