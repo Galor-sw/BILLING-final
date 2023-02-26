@@ -9,29 +9,34 @@ module.exports = {
     });
   },
 
-  createStripeIntent: (price, accountId) => {
-    return stripe.paymentIntents.create({
-      payment_method_types: ['card', 'us_bank_account'],
-      amount: (price * 100),
-      currency: 'usd',
-      metadata: { accountId }
-    });
-  },
-
   cancelSubscription: (stripeSubId) => {
     return stripe.subscriptions.update(stripeSubId, { cancel_at_period_end: true });
   },
 
-  createStripeCheckOutSession: (accountId, priceId, quantity) => {
-    return stripe.checkout.sessions.create({
-      success_url: 'http://localhost:5000//accounts/any/message',
-      cancel_url: 'http://localhost:5000//accounts/any/message',
-      payment_method_types: ['card', 'us_bank_account'],
-      line_items: [
-        { price: priceId, quantity }
-      ],
-      mode: 'subscription',
-      metadata: { accountId }
+  getCustomer: (customerId) => {
+    return stripe.customer.retrieve(customerId);
+  },
+
+  createCustomer: async (email, name) => {
+    return await stripe.customers.create({
+      email,
+      name
+    });
+  },
+
+  getSubscription: (stripeSubId) => {
+    return stripe.subscriptions.retrieve(stripeSubId);
+  },
+
+  createSubscription: (customerId, priceId) => {
+    return stripe.subscriptions.create({
+      customer: customerId,
+      items: [{
+        price: priceId
+      }],
+      payment_behavior: 'default_incomplete',
+      payment_settings: { save_default_payment_method: 'on_subscription' },
+      expand: ['latest_invoice.payment_intent']
     });
   }
 };
