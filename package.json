@@ -34,10 +34,13 @@
     "winston": "^3.8.2"
   },
   "scripts": {
-    "test": "jest",
+    "test": "jest --watchAll",
     "dev": "nodemon index.js",
     "start": "node index.js",
     "cron": "node src/cronJob/cronJob.js"
+  },
+  "jest": {
+    "collectCoverage": true
   },
   "devDependencies": {
     "eslint": "^8.31.0",
@@ -45,6 +48,7 @@
     "eslint-plugin-import": "^2.26.0",
     "eslint-plugin-n": "^15.6.0",
     "eslint-plugin-promise": "^6.1.1",
+    "sinon-chai": "^3.7.0",
     "supertest": "^6.3.3"
   }
 }
