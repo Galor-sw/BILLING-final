@@ -1,18 +1,20 @@
 const { getUnixTime, endOfMonth } = require('date-fns');
 const stripeRepo = require('../repositories/stripeRepo');
+const subscriptionRepo = require('../repositories/subscriptionRepo');
 const Logger = require('abtest-logger');
-const axios = require('axios');
+// const axios = require('axios');
 
 const logger = new Logger(process.env.CORE_QUEUE);
 
 const countItems = async () => {
-  const response = await axios.get(process.env.URL + '/subscription');
-  const items = response.data;
+  const subs = await subscriptionRepo.getAllSubscriptions();
   const counts = {};
-  items.forEach(item => {
+  subs.forEach(item => {
     if (item.plan != null) {
-      const name = item.plan.name;
-      counts[name] = (counts[name] || 0) + 1;
+      if (item.plan.name != 'Free') {
+        const name = item.plan.name;
+        counts[name] = (counts[name] || 0) + 1;
+      }
     }
   });
   return counts;
@@ -99,16 +101,16 @@ module.exports = {
   getPopularPlan: async (req, res) => {
     try {
       const planCounts = await countItems();
-      const maxPlanEntry = Object.entries(planCounts).reduce((acc, curr) => {
-        return curr[1] > acc[1] ? curr : acc;
-      });
+      const maxPlanEntry = Object.entries(planCounts).reduce(
+        (acc, [plan, count]) => (count > acc[1] ? [plan, count] : acc));
       const maxPlan = maxPlanEntry[0];
-      return (maxPlan);
+      res.send(maxPlan);
     } catch (err) {
-      await logger.error(`failed to fetch the popular item: ${err.message}`);
+      logger.error(`failed to fetch the popular item: ${err.message}`);
       res.status(500).send(err.message);
     }
   },
+
   getSucceededAndFailedPayment: async (req, res) => {
     try {
       const editedMonth = req.params.month >= 10 ? req.params.month : `0${req.params.month}`;
