@@ -127,7 +127,7 @@ module.exports = {
   getSucceededAndFailedPayment: async (req, res) => {
     try {
       let editedMonth;
-      if (req.params.month.length() < 2) {
+      if (req.params.month.toString().length() < 2) {
         editedMonth = req.params.month >= 10 ? req.params.month : `0${req.params.month}`;
       } else {
         editedMonth = req.params.month;
