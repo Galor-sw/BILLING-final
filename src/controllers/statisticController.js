@@ -109,7 +109,7 @@ module.exports = {
   },
   getSucceededAndFailedPayment: async (req, res) => {
     try {
-      const editedMonth = req.params.month > 10 ? req.params.month : `0${req.params.month}`;
+      const editedMonth = req.params.month >= 10 ? req.params.month : `0${req.params.month}`;
       const startString = `${req.params.year}-${editedMonth}-01T00:00:01Z`;
       const endOfMonthDay = new Date(endOfMonth(new Date(req.params.year, req.params.month - 1)));
       const endString = `${req.params.year}-${editedMonth}-${endOfMonthDay.getDate()}T23:59:59Z`;
@@ -123,7 +123,11 @@ module.exports = {
       const succeededPaymentCount = succeededPaymentIntents.length;
       const failedPaymentCount = failedPaymentIntents.length;
 
-      await res.send(`Succeeded payments: ${succeededPaymentCount}\nFailed payments: ${failedPaymentCount}`);
+      await res.send(
+        {
+          Succeeded_payments: succeededPaymentCount,
+          Failed_payments: failedPaymentCount
+        });
     } catch (err) {
       await logger.error(`failed to fetch succeeded and failed payments: ${err.message}`);
       res.status(500).send(err.message);
@@ -150,5 +154,29 @@ module.exports = {
       await logger.error(`failed to fetch succeeded and failed payments: ${err.message}`);
       res.status(500).send(err.message);
     }
+  },
+  getBillingPlansByCategory: async (req, res) => {
+    const start = new Date(req.params.start_date);
+    const end = new Date(req.params.end_date);
+
+    if (start > end) {
+      throw new Error('Invalid date range.');
+    }
+    const paymentInvoice = await stripeRepo.getInvoiceList(start.getTime() / 1000, end.getTime() / 1000);
+    const categoryCounts = {};
+
+    for (const pi of paymentInvoice.data) {
+      const planCategory = pi.lines.data[0].description.replace(/^1 × /, '');
+      if ((planCategory.includes('Pro') || planCategory.includes('Premium')) && !planCategory.startsWith('Time')) {
+        if (!categoryCounts[planCategory]) {
+          categoryCounts[planCategory] = 1;
+        } else {
+          categoryCounts[planCategory]++;
+          categoryCounts[planCategory]++;
+        }
+      }
+    }
+    res.json({ categoryCounts });
   }
+
 };
