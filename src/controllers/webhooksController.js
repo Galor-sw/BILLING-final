@@ -8,55 +8,49 @@ const Logger = require('abtest-logger');
 const logger = new Logger(process.env.CORE_QUEUE);
 const { sendSubscriptionToIAM, sendSuspendedAccountToIAM } = require('../RMQ/senderQueueMessage');
 
-module.exports = (() => {
-  const invoiceMap = {};
-  return ({
-    handleIncomingEvent: async (req, res) => {
-      const endpointSecret = process.env.END_POINT_STRIPE;
-      const sig = req.headers['stripe-signature'];
-      let event;
-      const checkoutCompleted = 'checkout.session.completed';
-      const invoiceSucceeded = 'invoice.payment_succeeded';
-      const invoiceFailed = 'invoice.payment_failed';
-      const customerDeleted = 'customer.subscription.deleted';
-      try {
-        event = await stripe.webhooks.constructEvent(req.body, sig, endpointSecret);
-      } catch (err) {
-        res.status(404).send(`Webhook Error: ${err.message}`);
-        return;
-      }
+module.exports = {
+  handleIncomingEvent: async (req, res) => {
+    const endpointSecret = 'whsec_fbb7eed21ab4bb9f7dc70a539aaccb0b870b99f07daa2069807e73d374589ddd';
+    // const endpointSecret = process.env.END_POINT_STRIPE;
 
-      switch (event.type) {
-        case checkoutCompleted:
-          if (!invoiceMap[event.data.object.invoice]) {
-            invoiceMap[event.data.object.invoice] = event.data.object.metadata.account;
-          }
-          break;
-        case invoiceSucceeded:
-          invoiceSucceededCase(event, invoiceMap);
-          break;
-        case invoiceFailed:
-          invoiceFailedCase(event);
-          break;
-        case customerDeleted:
-          customerDeletedCase(event);
-          break;
-      }
-      res.status(200).send();
+    const invoiceSucceeded = 'invoice.payment_succeeded';
+    const invoiceFailed = 'invoice.payment_failed';
+    const customerDeleted = 'customer.subscription.deleted';
+
+    let event;
+    try {
+      event = await stripe.webhooks.constructEvent(req.body, req.headers['stripe-signature'], endpointSecret);
+    } catch (err) {
+      res.status(500).send(`Webhook Error: ${err.message}`);
+      return;
     }
-  });
-})();
 
-const invoiceSucceededCase = async (event, invoiceMap) => {
+    switch (event.type) {
+      case invoiceSucceeded:
+        invoiceSucceededCase(event);
+        break;
+      case invoiceFailed:
+        invoiceFailedCase(event);
+        break;
+      case customerDeleted:
+        customerDeletedCase(event);
+        break;
+    }
+
+    res.status(200).send();
+  }
+};
+
+const invoiceSucceededCase = async (event) => {
   const session = event.data.object;
-  const id = invoiceMap[session.id];
-  delete invoiceMap[session.id];
+  const customerId = session.customer;
   const end = utcToString(session.lines.data[0].period.end);
   const start = utcToString(session.lines.data[0].period.start);
+
   try {
-    const subscription = await subsRepo.getSubscriptionByClientID(id);
+    const subscription = await subsRepo.getSubscriptionByCustomerID(customerId);
     const plan = await plansRepo.getPlanByStripeId(session.lines.data[0].plan.product);
-    const newSub = subscriptionObject(id, plan._id.toString(), start, end, session, 'active');
+    const newSub = subscriptionObject(subscription.accountId, plan._id.toString(), start, end, session, 'active');
     notifyEditedSub(subscription, plan, newSub);
     sendMail(session);
   } catch (err) {
@@ -73,9 +67,9 @@ const invoiceFailedCase = async (event) => {
     const plan = await plansRepo.getPlanByStripeId(session.lines.data[0].price.product);
     const newSub = subscriptionObject(subscription.accountId, plan._id.toString(), startDate, endDate, session, 'suspended');
     await subsRepo.editSubscription(subscription._id.toString(), newSub);
+    logger.info(`${subscription.accountId} subscription was suspended.`);
     sendSuspendedAccountToIAM(subscription.accountId);
     logger.info(`${subscription.accountId}'s details sent to IAM team.`);
-    logger.info(`${subscription.accountId} subscription was suspended.`);
   } catch (err) {
     logger.error(`failed to Update the repository: ${err.message}`);
   }
