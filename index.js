@@ -4,6 +4,7 @@ const startCronJob = require('./src/cronJob/cronJob');
 const listenQueue = require('./src/RMQ/reciverQueueMessage');
 const connectDb = require('./src/mongoConnection');
 const constant = require('./src/constants/constants');
+const { loggers } = require('winston');
 const initServer = async () => {
   try {
     await connectDb();
@@ -11,7 +12,7 @@ const initServer = async () => {
     await startCronJob.scheduledJob(constant.CRON_JOB_FREQ);
     await new Server().start();
   } catch (err) {
-
+    loggers.error(`error in init server ${err.message}`);
   }
 };
 
