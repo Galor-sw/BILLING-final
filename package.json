@@ -33,7 +33,7 @@
     "winston": "^3.8.2"
   },
   "scripts": {
-    "test": "jest --coverage --watchAll",
+    "test": "jest --coverage --watchAll unit.test",
     "dev": "nodemon index.js",
     "start": "node index.js",
     "cron": "node src/cronJob/cronJob.js"
