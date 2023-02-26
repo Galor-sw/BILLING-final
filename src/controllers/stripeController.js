@@ -19,7 +19,6 @@ module.exports = {
     try {
       // get the chosen plan
       const plan = await plansRepo.getPlanByName(req.body.name);
-
       // const price = getPrice(req.body.interval, plan);
       const accountId = req.body.accountId;
 
@@ -29,14 +28,11 @@ module.exports = {
         await stripeRepo.cancelSubscription(subscription.stripeSubId);
       } else {
         const account = await subsRepo.getSubscriptionByClientID(accountId);
-
         // get the right id's from the chosen interval
         const priceId = getStripeID(req.body.interval, plan);
-
         // get stripes customer and subscription
         const customer = await getCustomer(account);
         const subscription = await getSubscription(account, customer.id, priceId);
-
         // return the payment element client secret key
         res.send({
           subscriptionId: subscription.id,
