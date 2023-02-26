@@ -118,7 +118,7 @@ module.exports = {
       const maxPlanEntry = Object.entries(planCounts).reduce(
         (acc, [plan, count]) => (count > acc[1] ? [plan, count] : acc));
       const maxPlan = maxPlanEntry[0];
-      res.send(maxPlan);
+      res.json(maxPlan);
     } catch (err) {
       logger.error(`failed to fetch the popular item: ${err.message}`);
       res.status(500).send(err.message);
