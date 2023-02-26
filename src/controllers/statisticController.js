@@ -28,7 +28,9 @@ const getStatisticsByRange = async (startRangeTimestamp, endRangeTimestamp) => {
       .map((paymentIntent) => {
         return paymentIntent.amount / 100;
       });
-
+    if (paymentIntents.length === 0) {
+      return 0;
+    }
     return paymentIntents.reduce((a, b) => a + b);
   } else {
     await logger.error('bad range times');
@@ -39,8 +41,8 @@ const getStatisticsByRange = async (startRangeTimestamp, endRangeTimestamp) => {
 module.exports = {
   getDRR: async (req, res) => {
     try {
-      const editedMonth = req.params.month > 10 ? req.params.month : `0${req.params.month}`;
-      const editedDay = req.params.day > 10 ? req.params.day : `0${req.params.day}`;
+      const editedMonth = req.params.month >= 10 ? req.params.month : `0${req.params.month}`;
+      const editedDay = req.params.day >= 10 ? req.params.day : `0${req.params.day}`;
       const startString = `${req.params.year}-${editedMonth}-${editedDay}T00:00:01Z`;
       const endString = `${req.params.year}-${editedMonth}-${editedDay}T23:59:59Z`;
       const start = getUnixTime(new Date(startString));
@@ -55,7 +57,7 @@ module.exports = {
 
   getMRR: async (req, res) => {
     try {
-      const editedMonth = req.params.month > 10 ? req.params.month : `0${req.params.month}`;
+      const editedMonth = req.params.month >= 10 ? req.params.month : `0${req.params.month}`;
       const startString = `${req.params.year}-${editedMonth}-01T00:00:01Z`;
       const endOfMonthDay = new Date(endOfMonth(new Date(req.params.year, req.params.month - 1)));
       const endString = `${req.params.year}-${editedMonth}-${endOfMonthDay.getDate()}T23:59:59Z`;
