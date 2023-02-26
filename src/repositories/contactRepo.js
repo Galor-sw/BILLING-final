@@ -3,7 +3,8 @@ module.exports = {
 
   saveRequest: async (request) => {
     const { accountId, text } = request;
-    const contactUsRequest = new Contact({ accountId, text });
+    const jsonData = JSON.parse(`{"accountId":"${accountId}", "text":"${text}"}`);
+    const contactUsRequest = new Contact(jsonData);
     await contactUsRequest.save();
   }
 };
