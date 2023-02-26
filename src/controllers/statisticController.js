@@ -49,7 +49,7 @@ module.exports = {
       await res.send(amountTotal.toString());
     } catch (err) {
       await logger.error(`failed to fetch DRR: ${err.message}`);
-      res.status(404).send(err.message);
+      res.status(500).send(err.message);
     }
   },
 
@@ -65,7 +65,7 @@ module.exports = {
       await res.send(amountTotal.toString());
     } catch (err) {
       await logger.error(`failed to fetch MRR: ${err.message}`);
-      res.status(404).send(err.message);
+      res.status(500).send(err.message);
     }
   },
 
@@ -78,7 +78,7 @@ module.exports = {
       await res.send(amountTotal.toString());
     } catch (err) {
       await logger.error(`failed to fetch ARR: ${err.message}`);
-      res.status(404).send(err.message);
+      res.status(500).send(err.message);
     }
   },
 
@@ -90,7 +90,7 @@ module.exports = {
       await res.send(amountTotal.toString());
     } catch (err) {
       await logger.error(`failed to fetch Ranged Recurring Revenue: ${err.message}`);
-      res.status(404).send(err.message);
+      res.status(500).send(err.message);
     }
   },
 
@@ -104,7 +104,7 @@ module.exports = {
       return (maxPlan);
     } catch (err) {
       await logger.error(`failed to fetch the popular item: ${err.message}`);
-      res.status(404).send(err.message);
+      res.status(500).send(err.message);
     }
   }
 };

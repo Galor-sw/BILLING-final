@@ -9,7 +9,7 @@ module.exports = {
       subscriptions = await subsRepo.getAllSubscriptions();
     } catch (err) {
       logger.error(`failed to get all subscriptions: ${err.message}`);
-      res.status(404).send(err.message);
+      res.status(500).send(err.message);
     }
     res.status(200).send(subscriptions);
   },
@@ -18,12 +18,12 @@ module.exports = {
     try {
       const clientSub = await subsRepo.getSubscriptionByClientID(req.params.accountId);
       res.json({
-        name: clientSub.plan.name,
+        planName: clientSub.plan.name,
         type: clientSub.payment
       });
     } catch (err) {
       await logger.error(`failed to fetch plans from DB error: ${err.message}`);
-      res.status(400).send('failed occurred on server');
+      res.status(500).send('failed occurred on server');
     }
   },
 
@@ -33,7 +33,7 @@ module.exports = {
       newSub = await subsRepo.createSubscription(req.body);
     } catch (err) {
       logger.error(`failed to create subscription: ${err.message}`);
-      res.status(404).send(err.message);
+      res.status(500).send(err.message);
     }
     res.status(200).send(newSub);
   },
@@ -43,7 +43,7 @@ module.exports = {
       await subsRepo.editSubscriptionByAccountId(req.params.accountId, req.body);
     } catch (err) {
       logger.error(`failed to update subscription: ${err.message}`);
-      res.status(404).send(err.message);
+      res.status(500).send(err.message);
     }
     res.status(200).send(true);
   }
