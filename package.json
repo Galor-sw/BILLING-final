@@ -34,13 +34,21 @@
     "winston": "^3.8.2"
   },
   "scripts": {
-    "test": "jest --watchAll",
+    "test": "jest --coverage --watchAll",
     "dev": "nodemon index.js",
     "start": "node index.js",
     "cron": "node src/cronJob/cronJob.js"
   },
   "jest": {
-    "collectCoverage": true
+    "collectCoverage": true,
+    "collectCoverageFrom": [
+      "./src/**"
+    ],
+    "coverageThreshold": {
+      "global": {
+        "lines": 70
+      }
+    }
   },
   "devDependencies": {
     "eslint": "^8.31.0",
