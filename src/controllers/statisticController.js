@@ -2,7 +2,6 @@ const { getUnixTime, endOfMonth } = require('date-fns');
 const stripeRepo = require('../repositories/stripeRepo');
 const subscriptionRepo = require('../repositories/subscriptionRepo');
 const Logger = require('abtest-logger');
-// const axios = require('axios');
 
 const logger = new Logger(process.env.CORE_QUEUE);
 
@@ -43,8 +42,18 @@ const getStatisticsByRange = async (startRangeTimestamp, endRangeTimestamp) => {
 module.exports = {
   getDRR: async (req, res) => {
     try {
-      const editedMonth = req.params.month >= 10 ? req.params.month : `0${req.params.month}`;
-      const editedDay = req.params.day >= 10 ? req.params.day : `0${req.params.day}`;
+      let editedMonth;
+      if (req.params.month.toString().length < 2) {
+        editedMonth = req.params.month > 10 ? req.params.month : `0${req.params.month}`;
+      } else {
+        editedMonth = req.params.month;
+      }
+      let editedDay;
+      if (req.params.month.toString().length < 2) {
+        editedDay = req.params.day > 10 ? req.params.day : `0${req.params.day}`;
+      } else {
+        editedDay = req.params.day;
+      }
       const startString = `${req.params.year}-${editedMonth}-${editedDay}T00:00:01Z`;
       const endString = `${req.params.year}-${editedMonth}-${editedDay}T23:59:59Z`;
       const start = getUnixTime(new Date(startString));
@@ -59,7 +68,12 @@ module.exports = {
 
   getMRR: async (req, res) => {
     try {
-      const editedMonth = req.params.month >= 10 ? req.params.month : `0${req.params.month}`;
+      let editedMonth;
+      if (req.params.month.toString().length < 2) {
+        editedMonth = req.params.month >= 10 ? req.params.month : `0${req.params.month}`;
+      } else {
+        editedMonth = req.params.month;
+      }
       const startString = `${req.params.year}-${editedMonth}-01T00:00:01Z`;
       const endOfMonthDay = new Date(endOfMonth(new Date(req.params.year, req.params.month - 1)));
       const endString = `${req.params.year}-${editedMonth}-${endOfMonthDay.getDate()}T23:59:59Z`;
@@ -110,10 +124,14 @@ module.exports = {
       res.status(500).send(err.message);
     }
   },
-
   getSucceededAndFailedPayment: async (req, res) => {
     try {
-      const editedMonth = req.params.month >= 10 ? req.params.month : `0${req.params.month}`;
+      let editedMonth;
+      if (req.params.month.length() < 2) {
+        editedMonth = req.params.month >= 10 ? req.params.month : `0${req.params.month}`;
+      } else {
+        editedMonth = req.params.month;
+      }
       const startString = `${req.params.year}-${editedMonth}-01T00:00:01Z`;
       const endOfMonthDay = new Date(endOfMonth(new Date(req.params.year, req.params.month - 1)));
       const endString = `${req.params.year}-${editedMonth}-${endOfMonthDay.getDate()}T23:59:59Z`;
