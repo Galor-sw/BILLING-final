@@ -33,10 +33,21 @@
     "winston": "^3.8.2"
   },
   "scripts": {
-    "test": "jest",
+    "test": "jest --coverage --watchAll",
     "dev": "nodemon index.js",
     "start": "node index.js",
     "cron": "node src/cronJob/cronJob.js"
+  },
+  "jest": {
+    "collectCoverage": true,
+    "collectCoverageFrom": [
+      "./src/**"
+    ],
+    "coverageThreshold": {
+      "global": {
+        "lines": 70
+      }
+    }
   },
   "devDependencies": {
     "chai": "^4.3.7",
@@ -45,6 +56,7 @@
     "eslint-plugin-import": "^2.26.0",
     "eslint-plugin-n": "^15.6.0",
     "eslint-plugin-promise": "^6.1.1",
+    "sinon-chai": "^3.7.0",
     "mocha": "^10.2.0",
     "supertest": "^6.3.3"
   }
