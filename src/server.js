@@ -8,6 +8,7 @@ const webhooksRouter = require('./routers/webhooksRouter');
 const subscriptionRouter = require('./routers/subscriptionRouter');
 const statisticRouter = require('./routers/statisticRouter');
 const stripeRouter = require('./routers/stripeRouter');
+const contactRouter = require('./routers/contactRouter');
 
 module.exports = class server {
   constructor () {
@@ -34,6 +35,7 @@ module.exports = class server {
     this.app.use('/subscriptions', express.json(), subscriptionRouter);
     this.app.use('/statistics', express.json(), statisticRouter);
     this.app.use('/stripe', express.json(), stripeRouter);
+    this.app.use('/contact', express.json(), contactRouter);
     this.app.use('/webhook', express.raw({ type: '*/*' }), webhooksRouter);
   }
 
