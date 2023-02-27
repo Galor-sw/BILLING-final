@@ -21,15 +21,8 @@ The service will charge the client's user accordingly (and it will do a renewal 
 <img width="177" alt="image" src="https://user-images.githubusercontent.com/80041527/211177042-3e2dad95-52e5-4470-8caa-c2f2b97bd8c2.png">
 <p>Flow diagram- renewal</p>
 <img width="180" alt="image" src="https://user-images.githubusercontent.com/80041527/211177094-b438a636-d937-4699-8a86-11028a4f6c7e.png">
-<p>Select plan you want to buy.</p>
-<img width="960" alt="image" src="https://user-images.githubusercontent.com/80041527/211153758-ddd827b6-3853-4a75-82d1-9b33401a0622.png">
-<p>The selection will take you to an appropriate Stripe purchase page</p>
-<img width="943" alt="image" src="https://user-images.githubusercontent.com/80041527/211153792-3569a9bd-a9bb-40c1-ac64-6f73c896f5d2.png">
-<p>Get feedback page if the payment was successful.</p>
-<img width="958" alt="image" src="https://user-images.githubusercontent.com/80041527/211154160-4932402f-302d-4a61-ac22-baff149fd4aa.png">
 
 <h3>Installation Guide</h3>
-TODO: add links and missing sections.
 <ol>
 <li>clone git repository:  </li>
 <li>add file: '.env' into config folder </li>
