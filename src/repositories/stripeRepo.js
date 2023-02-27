@@ -8,7 +8,13 @@ module.exports = {
       limit: 100 // Maximum limit (10 is default)
     });
   },
-
+  getInvoiceList: (startRangeTimestamp, endRangeTimestamp) => {
+    return stripe.invoices.list({
+      created: { gte: startRangeTimestamp, lte: endRangeTimestamp },
+      limit: 100,
+      status: 'paid'
+    });
+  },
   cancelSubscription: (stripeSubId) => {
     return stripe.subscriptions.update(stripeSubId, { cancel_at_period_end: true });
   },

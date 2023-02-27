@@ -36,7 +36,7 @@ module.exports = {
         if (account.stripeSubId) {
           // update sub
           const subscription = await getSubscription(account.stripeSubId);
-          // create the downgrade flow:
+          
           await stripeRepo.upgradeSubscription(subscription, priceId);
 
           response = {
