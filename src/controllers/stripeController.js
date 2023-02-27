@@ -29,18 +29,18 @@ module.exports = {
       if (plan.name === 'Free') {
         await cancelSubscription(accountId);
         response = {
-          msg: 'We are sorry to see you leaving, your subscription will end at the end of the contract'
+          msg: 'Your free plan will be activated at the end of the current subscription'
         };
       } else {
         const account = await subsRepo.getSubscriptionByClientID(accountId);
         if (account.stripeSubId) {
           // update sub
           const subscription = await getSubscription(account.stripeSubId);
-          
+
           await stripeRepo.upgradeSubscription(subscription, priceId);
 
           response = {
-            msg: 'subscription updated successfully'
+            msg: 'Your subscription has updated successfully'
           };
         } else {
           if (account.customerId) {
