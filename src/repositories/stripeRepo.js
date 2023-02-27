@@ -13,8 +13,12 @@ module.exports = {
     return stripe.subscriptions.update(stripeSubId, { cancel_at_period_end: true });
   },
 
+  constructEvent: (body, stripeSig, endPointSecret) => {
+    return stripe.webhooks.constructEvent(body, stripeSig, endPointSecret);
+  },
+
   getCustomer: (customerId) => {
-    return stripe.customer.retrieve(customerId);
+    return stripe.customers.retrieve(customerId);
   },
 
   createCustomer: async (email, name) => {
@@ -37,6 +41,18 @@ module.exports = {
       payment_behavior: 'default_incomplete',
       payment_settings: { save_default_payment_method: 'on_subscription' },
       expand: ['latest_invoice.payment_intent']
+    });
+  },
+
+  upgradeSubscription: (subscription, priceId) => {
+    return stripe.subscriptions.update(subscription.id, {
+      cancel_at_period_end: false,
+      proration_behavior: 'always_invoice',
+      payment_behavior: 'default_incomplete',
+      items: [{
+        id: subscription.items.data[0].id,
+        price: priceId
+      }]
     });
   }
 };

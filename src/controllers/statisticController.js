@@ -1,7 +1,10 @@
+// npm packages
 const { getUnixTime, endOfMonth } = require('date-fns');
-const stripeRepo = require('../repositories/stripeRepo');
 const Logger = require('abtest-logger');
 const axios = require('axios');
+
+// repositories
+const stripeRepo = require('../repositories/stripeRepo');
 
 const logger = new Logger(process.env.CORE_QUEUE);
 

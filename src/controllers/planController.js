@@ -1,6 +1,9 @@
+// npm packages
+const Logger = require('abtest-logger');
+
+// repositories
 const plansRepo = require('../repositories/plansRepo');
 
-const Logger = require('abtest-logger');
 const logger = new Logger(process.env.CORE_QUEUE);
 
 module.exports = {

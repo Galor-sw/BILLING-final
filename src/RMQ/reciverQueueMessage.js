@@ -1,14 +1,20 @@
+// npm packages
 const amqp = require('amqplib/callback_api');
 const moment = require('moment/moment');
 const Logger = require('abtest-logger');
+
+// repositories
 const subsRepo = require('../repositories/subscriptionRepo');
 const plansRepo = require('../repositories/plansRepo');
+
+// src files
 const { sendSubscriptionToIAM } = require('./senderQueueMessage');
 
 const IAMMessageCreateFreePlan = process.env.GET_MESSAGE_FROM_IAM_CREATE_FREE_PLAN;
 const IAMMessageStatusAccount = process.env.GET_MESSAGE_FROM_IAM_ACCOUNT_STATUS_CHANGED;
 
 const logger = new Logger(process.env.CORE_QUEUE);
+
 const format = 'YYYY-MM-DD HH:mm:ss';
 
 const listenQueue = () => {
