@@ -1,7 +1,10 @@
+// npm packages
 const { getUnixTime, endOfMonth } = require('date-fns');
-const stripeRepo = require('../repositories/stripeRepo');
-const subscriptionRepo = require('../repositories/subscriptionRepo');
 const Logger = require('abtest-logger');
+
+// repositories
+const subscriptionRepo = require('../repositories/subscriptionRepo');
+const stripeRepo = require('../repositories/stripeRepo');
 
 const logger = new Logger(process.env.CORE_QUEUE);
 
@@ -22,8 +25,6 @@ const countItems = async () => {
 const getStatisticsByRange = async (startRangeTimestamp, endRangeTimestamp) => {
   if (endRangeTimestamp > startRangeTimestamp) {
     const paymentIntentsInCents = await stripeRepo.getPaymentIntentsInCents(startRangeTimestamp, endRangeTimestamp);
-
-    // paymentIntents returned by Stripe API are in cents, so we divide by 100
     const paymentIntents = paymentIntentsInCents.data
       .filter((paymentIntent) => paymentIntent.status === 'succeeded')
       .map((paymentIntent) => {

@@ -1,5 +1,9 @@
-const subsRepo = require('../repositories/subscriptionRepo');
+// npm packages
 const Logger = require('abtest-logger');
+
+// repositories
+const subsRepo = require('../repositories/subscriptionRepo');
+
 const logger = new Logger(process.env.CORE_QUEUE);
 
 module.exports = {
@@ -23,7 +27,7 @@ module.exports = {
       });
     } catch (err) {
       await logger.error(`failed to fetch plans from DB error: ${err.message}`);
-      res.status(500).send('failed occurred on server');
+      res.status(400).send('failed occurred on server');
     }
   },
 
@@ -46,7 +50,6 @@ module.exports = {
       logger.error(`failed to update subscription: ${err.message}`);
       res.status(500).send(err.message);
     }
-
   }
 
 };

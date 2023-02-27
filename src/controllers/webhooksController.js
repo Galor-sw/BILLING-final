@@ -1,39 +1,42 @@
-const stripeSecretKey = process.env.STRIPE_SECRET_KEY;
-const stripe = require('stripe')(stripeSecretKey);
+// npm packages
 const nodemailer = require('nodemailer');
 const moment = require('moment');
+const Logger = require('abtest-logger');
+
+// repositories
 const plansRepo = require('../repositories/plansRepo');
 const subsRepo = require('../repositories/subscriptionRepo');
-const Logger = require('abtest-logger');
-const logger = new Logger(process.env.CORE_QUEUE);
+const stripeRepo = require('../repositories/stripeRepo');
+
+// src files
 const { sendSubscriptionToIAM, sendSuspendedAccountToIAM } = require('../RMQ/senderQueueMessage');
+const { webHooksEvents } = require('../constants/constant');
+
+const logger = new Logger(process.env.CORE_QUEUE);
 
 module.exports = {
   handleIncomingEvent: async (req, res) => {
-    const endpointSecret = 'whsec_fbb7eed21ab4bb9f7dc70a539aaccb0b870b99f07daa2069807e73d374589ddd';
-    // const endpointSecret = process.env.END_POINT_STRIPE;
-
-    const invoiceSucceeded = 'invoice.payment_succeeded';
-    const invoiceFailed = 'invoice.payment_failed';
-    const customerDeleted = 'customer.subscription.deleted';
+    // temporary for local run
+    const endPointSecret = 'whsec_fbb7eed21ab4bb9f7dc70a539aaccb0b870b99f07daa2069807e73d374589ddd';
+    // const endPointSecret = process.env.END_POINT_STRIPE;
 
     let event;
     try {
-      event = await stripe.webhooks.constructEvent(req.body, req.headers['stripe-signature'], endpointSecret);
+      event = await stripeRepo.constructEvent(req.body, req.headers['stripe-signature'], endPointSecret);
     } catch (err) {
       res.status(500).send(`Webhook Error: ${err.message}`);
       return;
     }
 
     switch (event.type) {
-      case invoiceSucceeded:
-        invoiceSucceededCase(event);
+      case webHooksEvents.customerUpdated:
+        await customerUpdatedCase(event);
         break;
-      case invoiceFailed:
-        invoiceFailedCase(event);
+      case webHooksEvents.invoiceFailed:
+        await invoiceFailedCase(event);
         break;
-      case customerDeleted:
-        customerDeletedCase(event);
+      case webHooksEvents.customerDeleted:
+        await customerDeletedCase(event);
         break;
     }
 
@@ -41,18 +44,19 @@ module.exports = {
   }
 };
 
-const invoiceSucceededCase = async (event) => {
+const customerUpdatedCase = async (event) => {
   const session = event.data.object;
   const customerId = session.customer;
-  const end = utcToString(session.lines.data[0].period.end);
-  const start = utcToString(session.lines.data[0].period.start);
+  const end = utcToString(session.current_period_end);
+  const start = utcToString(session.current_period_start);
 
   try {
     const subscription = await subsRepo.getSubscriptionByCustomerID(customerId);
-    const plan = await plansRepo.getPlanByStripeId(session.lines.data[0].plan.product);
+    const plan = await plansRepo.getPlanByStripeId(session.plan.product);
     const newSub = subscriptionObject(subscription.accountId, plan._id.toString(), start, end, session, 'active');
-    notifyEditedSub(subscription, plan, newSub);
-    sendMail(session);
+
+    await notifyEditedSub(subscription, plan, newSub);
+    await sendMail(session.customer);
   } catch (err) {
     await logger.error(`failed to Update the repository: ${err.message}`);
   }
@@ -66,9 +70,11 @@ const invoiceFailedCase = async (event) => {
     const subscription = await subsRepo.getSubscriptionByCustomerID(session.customer);
     const plan = await plansRepo.getPlanByStripeId(session.lines.data[0].price.product);
     const newSub = subscriptionObject(subscription.accountId, plan._id.toString(), startDate, endDate, session, 'suspended');
+
     await subsRepo.editSubscription(subscription._id.toString(), newSub);
     logger.info(`${subscription.accountId} subscription was suspended.`);
-    sendSuspendedAccountToIAM(subscription.accountId);
+
+    await sendSuspendedAccountToIAM(subscription.accountId);
     logger.info(`${subscription.accountId}'s details sent to IAM team.`);
   } catch (err) {
     logger.error(`failed to Update the repository: ${err.message}`);
@@ -84,9 +90,10 @@ const customerDeletedCase = async (event) => {
     const subscription = await subsRepo.getSubscriptionByCustomerID(session.customer);
     const plan = await plansRepo.getPlanByName('Free');
     const newSub = subscriptionObject(subscription.accountId, plan._id.toString(), date, nextDate, session, 'active');
-    notifyEditedSub(subscription, plan, newSub);
+
+    await notifyEditedSub(subscription, plan, newSub);
   } catch (err) {
-    await logger.error(`failed to Update the repository: ${err.message}`);
+    logger.error(`failed to Update the repository: ${err.message}`);
   }
 };
 
@@ -95,21 +102,28 @@ const utcToString = (date) => {
 };
 
 const subscriptionObject = (id, planId, start, end, session, status) => {
-  const object = {
+  return {
     accountId: id,
     plan: planId,
     start_date: start,
     next_date: end,
-    payment: session.lines.data[0].plan.interval,
+    payment: session.plan.interval,
     renewal: end,
     status,
     customerId: session.customer,
-    stripeSubId: session.subscription
+    stripeSubId: session.id
   };
-  return object;
 };
 
-const sendMail = async (session) => {
+const getCustomer = async (customerId) => {
+  try {
+    return await stripeRepo.getCustomer(customerId);
+  } catch (err) {
+    throw new Error(`error while getting customer: ${err.message}`);
+  }
+};
+
+const sendMail = async (customerId) => {
   const transporter = nodemailer.createTransport({
     host: 'zohomail.com',
     service: 'Zoho',
@@ -121,26 +135,27 @@ const sendMail = async (session) => {
   });
 
   try {
+    const customer = await getCustomer(customerId);
     await transporter.sendMail({
       from: process.env.email,
-      to: session.customer_email,
+      to: customer.email,
       subject: 'Thank you for your purchase',
       text: 'Thank you for your purchase',
-      html: `Hello ${session.customer_name}, thanks for your purchase`
+      html: `Hello ${customer.name}, thanks for your purchase`
     });
-    await logger.info(`email sent to ${session.customer_email}`);
+    logger.info(`email sent to ${customer.email}`);
   } catch (err) {
-    await logger.error(`failed to send payment mail to client: ${err.message}`);
+    logger.error(`failed to send payment mail to client: ${err.message}`);
   }
 };
 
 const notifyEditedSub = async (subscription, plan, editedSub) => {
   try {
-    await subsRepo.editSubscription(subscription._id.toString(), editedSub);
-    await logger.info(`${subscription.accountId} subscription was updated.`);
+    await subsRepo.editSubscriptionByAccountId(subscription.accountId.toString(), editedSub);
+    logger.info(`${subscription.accountId} subscription was updated.`);
     await sendSubscriptionToIAM(subscription.accountId, plan.credits, plan.seats, plan.features);
-    await logger.info(`${subscription.accountId}'s details sent to IAM team.`);
+    logger.info(`${subscription.accountId}'s details sent to IAM team.`);
   } catch (err) {
-    await logger.error(`failed to edit subscription ${err.message}`);
+    logger.error(`failed to edit subscription ${err.message}`);
   }
 };
