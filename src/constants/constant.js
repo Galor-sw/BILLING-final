@@ -12,11 +12,18 @@ const sub = {
   status: 'active'
 };
 
+const webHooksEvents = {
+  invoiceFailed: 'invoice.payment_failed',
+  customerDeleted: 'customer.subscription.deleted',
+  customerUpdated: 'customer.subscription.updated'
+};
+
 module.exports = {
   testAccountId,
   CRON_JOB_FREQ,
   customerID,
   planId,
   accountId,
-  sub
+  sub,
+  webHooksEvents
 };
