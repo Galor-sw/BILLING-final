@@ -1,8 +1,9 @@
 const CRON_JOB_FREQ = '00 04 * * *';
 const testAccountId = '63b9727c238a2058c3fe4fb2';
 const planId = '63b31dae2850ec8eb67f42e7';
-const customerID = 'cus_NQOyhbGlwgORRc';
-const accountId = '63bac99534d9cad8e909f5bf';
+const customerID = 'cus_NQbRok01UD8AeO';
+const accountId = '63f10140f6097ec069e83f09';
+
 const sub = {
   plan: '63b31dae2850ec8eb67f42e7',
   start_date: '2023-02-26T10:19:21.000+00:00',

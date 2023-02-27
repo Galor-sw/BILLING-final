@@ -3,7 +3,7 @@ const subscriptionsRepo = require('../../../src/repositories/subscriptionRepo');
 const connectDb = require('../../../src/mongoConnection');
 const { beforeAll } = require('@jest/globals');
 const listenQueue = require('../../../src/RMQ/reciverQueueMessage');
-const { testAccountId, planId, customerID, accountId, sub } = require('../../../src/constant/constant');
+const { testAccountId, planId, customerID, accountId, sub } = require('../../../src/constants/constant');
 describe('unit test on subscription repo', () => {
   beforeAll(async () => {
     try {
