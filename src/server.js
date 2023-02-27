@@ -41,7 +41,6 @@ module.exports = class server {
   }
 
   handleErrors () {
-    // Handle invalid routes
     this.app.use((req, res, next) => {
       const error = new Error('Bad Request');
       error.status = 404;
