@@ -27,7 +27,7 @@ module.exports = {
       });
     } catch (err) {
       await logger.error(`failed to fetch plans from DB error: ${err.message}`);
-      res.status(500).send('failed occurred on server');
+      res.status(400).send('failed occurred on server');
     }
   },
 

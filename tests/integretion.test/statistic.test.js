@@ -19,7 +19,7 @@ describe('Task API calls for statistics', () => {
   // });
   describe('GET /statistics/:start_date/:end_date', () => {
     it('Should give statistic by range of dates', async () => {
-      const response = await chai.request(process.env.URL).get('/statistics/2022-02-02T23:59:59Z/2023-02-22T23:59:59Z');
+      const response = await chai.request(process.env.URL).get('/statistics/revenues/2022-02-02T23:59:59Z/2023-02-22T23:59:59Z');
       assert.strictEqual(response.status, 200);
       expect(parseInt(response.text)).to.equal(2215);
     });
