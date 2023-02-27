@@ -6,7 +6,6 @@ const listenQueue = require('./src/RMQ/reciverQueueMessage');
 const connectDb = require('./src/mongoConnection');
 const { CRON_JOB_FREQ } = require('./src/constants/constant');
 const Logger = require('abtest-logger');
-
 const logger = new Logger(process.env.CORE_QUEUE);
 
 const initServer = async () => {

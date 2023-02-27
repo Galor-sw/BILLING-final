@@ -7,16 +7,11 @@ const Logger = require('abtest-logger');
 const subsRepo = require('../repositories/subscriptionRepo');
 const plansRepo = require('../repositories/plansRepo');
 
-// src files
 const { sendSubscriptionToIAM } = require('./senderQueueMessage');
-
 const IAMMessageCreateFreePlan = process.env.GET_MESSAGE_FROM_IAM_CREATE_FREE_PLAN;
 const IAMMessageStatusAccount = process.env.GET_MESSAGE_FROM_IAM_ACCOUNT_STATUS_CHANGED;
-
 const logger = new Logger(process.env.CORE_QUEUE);
-
 const format = 'YYYY-MM-DD HH:mm:ss';
-
 const listenQueue = () => {
   amqp.connect(IAMMessageCreateFreePlan, (err, conn) => {
     conn.createChannel(async (err, ch) => {

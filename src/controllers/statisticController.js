@@ -25,8 +25,6 @@ const countItems = async () => {
 const getStatisticsByRange = async (startRangeTimestamp, endRangeTimestamp) => {
   if (endRangeTimestamp > startRangeTimestamp) {
     const paymentIntentsInCents = await stripeRepo.getPaymentIntentsInCents(startRangeTimestamp, endRangeTimestamp);
-
-    // paymentIntents returned by Stripe API are in cents, so we divide by 100
     const paymentIntents = paymentIntentsInCents.data
       .filter((paymentIntent) => paymentIntent.status === 'succeeded')
       .map((paymentIntent) => {
