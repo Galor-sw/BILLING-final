@@ -10,7 +10,7 @@ const stripeRepo = require('../repositories/stripeRepo');
 
 // src files
 const { sendSubscriptionToIAM, sendSuspendedAccountToIAM } = require('../RMQ/senderQueueMessage');
-const { webHooksEvents } = require('../constants/constants');
+const { webHooksEvents } = require('../constants/constant');
 
 const logger = new Logger(process.env.CORE_QUEUE);
 
@@ -30,13 +30,13 @@ module.exports = {
 
     switch (event.type) {
       case webHooksEvents.customerUpdated:
-        customerUpdatedCase(event);
+        await customerUpdatedCase(event);
         break;
       case webHooksEvents.invoiceFailed:
-        invoiceFailedCase(event);
+        await invoiceFailedCase(event);
         break;
       case webHooksEvents.customerDeleted:
-        customerDeletedCase(event);
+        await customerDeletedCase(event);
         break;
     }
 
@@ -102,7 +102,7 @@ const utcToString = (date) => {
 };
 
 const subscriptionObject = (id, planId, start, end, session, status) => {
-  const object = {
+  return {
     accountId: id,
     plan: planId,
     start_date: start,
@@ -113,7 +113,6 @@ const subscriptionObject = (id, planId, start, end, session, status) => {
     customerId: session.customer,
     stripeSubId: session.id
   };
-  return object;
 };
 
 const getCustomer = async (customerId) => {

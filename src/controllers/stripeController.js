@@ -27,6 +27,7 @@ module.exports = {
       const priceId = getStripeID(req.body.interval, plan);
 
       if (plan.name === 'Free') {
+        // cancel subscription at the end of the period
         await cancelSubscription(accountId);
         response = {
           msg: 'Your free plan will be activated at the end of the current subscription'
@@ -34,9 +35,8 @@ module.exports = {
       } else {
         const account = await subsRepo.getSubscriptionByClientID(accountId);
         if (account.stripeSubId) {
-          // update sub
+          // get the old subscription and update
           const subscription = await getSubscription(account.stripeSubId);
-
           await stripeRepo.upgradeSubscription(subscription, priceId);
 
           response = {
@@ -44,6 +44,7 @@ module.exports = {
           };
         } else {
           if (account.customerId) {
+            // remove the customer if he has no subscription
             await removeCustomerFromDB(accountId);
           }
           // create new customer and subscription
