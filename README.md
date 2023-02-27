@@ -1,42 +1,67 @@
-<h1> BILLING-phase1</h1>
-<h2>A service that allows clients to manage plans and subscriptions
-and charge the client's users accordingly</h2>
+<h1> BILLING - final assignment </h1>
+<h2>We are the Billing team, responsible for charging clients and managing company-wide subscription plans</h2>
 <h3>Description:</h3>
-The service will have three plans:
+plans:
 <ol>
 <li>Free</li>
 <li>Pro</li>
 <li>Premium</li>
 </ol>
-The service provides a list of all the plans and it's details for the user.
-The services will show the  client's user which subscription he owns.
-THe client's user will be able to choose another plan.
-The service will charge the client's user accordingly (and it will do a renewal for the subscription in an interval of time).
-<h3>Working of the project</h3>
-<p>Sequence diagram</p>
-<img width="335" alt="image" src="https://user-images.githubusercontent.com/80041527/211177017-a4996035-e9cf-443b-a2d6-116f3c8dd71d.png">
-<p>ERD</p>
-<img width="183" alt="image" src="https://user-images.githubusercontent.com/80041527/211177586-9f19ddb5-4362-4fcf-858f-a742fb4a0945.png">
-<p>Flow diagram- purchase</p>
-<img width="177" alt="image" src="https://user-images.githubusercontent.com/80041527/211177042-3e2dad95-52e5-4470-8caa-c2f2b97bd8c2.png">
-<p>Flow diagram- renewal</p>
-<img width="180" alt="image" src="https://user-images.githubusercontent.com/80041527/211177094-b438a636-d937-4699-8a86-11028a4f6c7e.png">
 
+our features:
+<ol>
+  <li>Purchase plan: This refers to the process by which clients can select and purchase a subscription plan for your company's services.</li>
+  <li>Change plan: This refers to the ability for clients to modify their existing subscription plan, such as upgrading or downgrading to a different plan.</li>
+  <li>Contact us: This likely refers to a feature on your website or platform that allows clients to get in touch with your team if they have any questions or issues related to their subscription or payment.</li>
+  <li>Purchase with credit card or bank transfer: This refers to the payment options available to clients when purchasing a subscription plan. They can either pay with a credit card or initiate a bank transfer.</li>
+  <li>Statistics: This refers to the data and metrics that your team collects and analyzes in order to better understand how clients are using your services and how to optimize the billing and subscription process.</li>
+  <li>Contact with IAM team and GROWTH team: These likely refer to other teams within your company that are responsible for identity and access management (IAM) and growth initiatives, respectively. Contact with these teams may be necessary in order to coordinate efforts and ensure that all aspects of the subscription process are working smoothly.</li>
+</ol>
+
+<h3>Working of the project</h3>
+billing system:
+
+<ol>
+  <li>New client flow:
+    <ul>
+      <li>A new client signs up and automatically receives a free plan.</li>
+      <li>The client can view three plans, one of which is recommended and another is a best seller.</li>
+      <li>If the client is an admin, they can purchase other plans (pro/premium).</li>
+      <li>The client can pay with a credit card or bank transfer via a Stripe popup window.</li>
+      <li>After completing the payment process, the client receives a success/fail system message and is redirected to the home page.</li>
+    </ul>
+  </li>
+  <li>Existing client flow:
+    <ul>
+      <li>An existing client can view other plans by clicking on the "plans" link in the navigation bar.</li>
+      <li>The existing plan is selected and highlighted with a gray button.</li>
+      <li>The client can change their plan by clicking on any other button, which will be highlighted with a blue button.</li>
+      <li>If the client wants to change from a paid plan to a free plan, they will be notified that the change will be approved at the end of their existing contract.</li>
+      <li>If the client changes to another paid plan, it will be automatically updated and if the new charge is lower than the former, they will receive a refund.</li>
+      <li>After the plan change process is complete, the client receives a message with an "OK!" button to redirect them to the home page.</li>
+    </ul>
+  </li>
+  <li>Custom plan flow:
+    <ul>
+      <li>The client can click on the "contact us" button and fill out a textarea with their request for a custom plan.</li>
+      <li>After clicking the "send!" button, a ticket is created in the billing system with the client's personal details and request.</li>
+    </ul>
+  </li>
+</ol>
 <h3>Installation Guide</h3>
 <ol>
 <li>clone git repository:  </li>
-<li>add file: '.env' into config folder </li>
-<li>run: 'npm install'</li>
-<li>run: 'npm run start'</li>
-<li>if you are in dev mode change url to 'http://localhost:5000/'</li>
-<li>run in render: https://billing-final-phase1-development.onrender.com/accounts/63b9727c238a2058c3fe4fb2</li>
-<li>this is example, account_id : 63b9727c238a2058c3fe4fb2 will provide this account plan selected and option to upgrade</li>
-<li>mongoDB: https://cloud.mongodb.com/v2/63aad8f5198ef05c11eb7c72#/metrics/replicaSet/63aada4bc3881d4e4f1ffa14/explorer/billing/plans/find</li>
-<li>Stripe: https://dashboard.stripe.com/login?redirect=%2Ftest%2Fdashboard</li>
-<li>Notion: https://www.notion.so/c3bff7005a344f728a6cae4d66fee5ee?v=4b106978d3754261b125c444ef0fa25c&p=b1cd15ed9f924f28990c6dfed80314fc&pm=s </li>
-<li>API DOCS: https://documenter.getpostman.com/view/24149950/2s8Z75S9pC</li>
+<ul>
+<li>server side repository</li>
+<li>client side repository</li>
+</ul>
+<li>add file: '.env' into main root of the server side </li>
+<li>server + client - run: 'npm i'</li>
+<li>server - run: 'npm run start'</li>
+<li>client run: 'npm start'</li>
+<li>for dev Mode change url to 'http://localhost:5000/'</li>
+<li>run the client side - by sign up to the system - than the other flows we presented earlier</li>
 </ol>
-<h3>MIT License</h3>
 
 <h3>credits:</h3>
 <h4>The Team-</h4>
