@@ -1,4 +1,5 @@
 const { Plan } = require('../models/plan');
+
 module.exports = {
 
   getPlans: () => {

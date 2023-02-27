@@ -1,5 +1,7 @@
+// npm packages
 const mongoose = require('mongoose');
 const Logger = require('abtest-logger');
+
 const logger = new Logger(process.env.CORE_QUEUE);
 
 const options = {

@@ -1,5 +1,9 @@
-const subsRepo = require('../repositories/subscriptionRepo');
+// npm packages
 const Logger = require('abtest-logger');
+
+// repositories
+const subsRepo = require('../repositories/subscriptionRepo');
+
 const logger = new Logger(process.env.CORE_QUEUE);
 
 module.exports = {
@@ -46,7 +50,6 @@ module.exports = {
       logger.error(`failed to update subscription: ${err.message}`);
       res.status(500).send(err.message);
     }
-
   }
 
 };
